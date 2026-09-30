@@ -1,0 +1,46 @@
+\cbsomConsensus*
+
+\begin{proof}\label{proof:consensus-n3}
+  By Theorem~\ref{thm:cbsom-limits}, the limits
+  $U=\lim_{t\to\infty}\max(\mathbf{B}^t)$ and
+  $L=\lim_{t\to\infty}\min(\mathbf{B}^t)$ exist in $[0,1]$ with $L\le U$.
+  We show $U=L$ by contradiction.
+
+  \medskip\noindent\textbf{Suppose $U-L=:\delta>0$.}
+
+  Since $\max(\mathbf{B}^t)\to U$ and $\min(\mathbf{B}^t)\to L$,
+  there exists $T_0\in\mathbb{N}$ such that for all $t\ge T_0$:
+  \begin{equation}\label{eq:app-consensus-sandwich}
+    \max(\mathbf{B}^t) \;\ge\; U-\tfrac{\delta}{4}
+    \qquad\text{and}\qquad
+    \min(\mathbf{B}^t) \;\le\; L+\tfrac{\delta}{4}.
+  \end{equation}
+  In particular, for all $t\ge T_0$:
+  \begin{equation}\label{eq:app-Rt-lower}
+    R_t = \max(\mathbf{B}^t)-\min(\mathbf{B}^t)
+    \;\ge\;
+    \Bigl(U-\tfrac{\delta}{4}\Bigr)-\Bigl(L+\tfrac{\delta}{4}\Bigr)
+    = \delta - \tfrac{\delta}{2} = \tfrac{\delta}{2} > 0.
+  \end{equation}
+  Thus $R_t\ge\delta/2>0$ for all $t\ge T_0$.
+
+  \medskip\noindent\textbf{Contradiction via Lemma~\ref{lem:contraction}.}
+
+  Applying Lemma~\ref{lem:contraction} with $\varepsilon=\delta/2$
+  (which is positive), there exists $t^*\in\mathbb{N}$ such that
+  $R_{t^*}<\delta/2$.
+  Taking $t^{**}=\max(T_0,t^*)$ and using the fact that $\{R_t\}$ is
+  non-increasing (Corollary~\ref{cor:cbsom-mono}):
+  \[R_{t^{**}}\le R_{t^*}<\frac{\delta}{2}.\]
+  But $t^{**}\ge T_0$ implies $R_{t^{**}}\ge\delta/2$
+  by~\eqref{eq:app-Rt-lower}: contradiction.
+
+  \medskip\noindent\textbf{Conclusion.}
+
+  Therefore $U=L$.  For every agent $i\in A$ and every $t\ge 0$:
+  \[\min(\mathbf{B}^t)\;\le\; B_i^t\;\le\;\max(\mathbf{B}^t),\]
+  and both bounds converge to $U=L$.
+  By the Squeeze Theorem~\cite{Houshang2014},
+  $\lim_{t\to\infty}B_i^t=U=L$ for all $i\in A$.
+  All agents converge to consensus.
+\end{proof}

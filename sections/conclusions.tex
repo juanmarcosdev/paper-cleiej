@@ -1,0 +1,73 @@
+\section{Conclusions and Related Work}
+\label{sec:conclusions}
+
+\subsection{Conclusions}
+
+We introduced \CBSOMminus\ and \CBSOMplus, two extensions of the
+Spiral-of-Silence opinion models of~\cite{aranda2024sound}
+that incorporate cognitive bias functions into the belief-update rule.
+We identified the Receptive-Resistant region~$R$ as the structural
+condition under which bias-augmented dynamics preserve the key structural
+properties of the base model: scaled linear $R$-biases guarantee consensus
+on cliques for all $n \geq 2$, while backfire and authority biases
+consistently prevent it in all simulated scenarios.
+To our knowledge, this is the first work to embed cognitive bias functions
+into a Spiral-of-Silence framework and to provide formal consensus
+guarantees for the resulting models.
+The theoretical results are corroborated by large-scale simulations over
+networks ranging from $10$ to $10^6$ agents, confirming the bias-region
+dichotomy observed empirically, a sub-linear growth of the critical density
+threshold with network size, and the structural consensus barrier
+introduced by memory-based dynamics.
+
+In future work, we plan to extend the consensus analysis beyond cliques to
+arbitrary strongly-connected graphs.
+We also plan to extend the framework to dynamic network topologies, where
+the influence graph evolves over time, and to confidence-based silence
+formulations, not yet studied under cognitive bias.
+Finally, coupling the simulation framework with empirical social network
+data would allow partial model validation and the tuning of bias parameters
+to improve the predictive power of the models for real-world opinion
+polarization phenomena.
+
+\subsection{Related Work}
+
+Alvim et al.~\cite{Alvim2024} introduce the bias region taxonomy---receptive-resistant,
+malleable, backfire, and insular---used throughout this paper, and prove
+that continuous $R$-region bias functions guarantee consensus in synchronous
+DeGroot dynamics on strongly connected graphs.
+Our work builds directly on this framework: Theorem~\ref{thm:cbsom-consensus-n3}
+lifts the $R$-bias consensus guarantee from the synchronous DeGroot setting to the
+Spiral-of-Silence setting, where the silence mechanism introduces a
+structural decoupling between bias and silence decisions.
+A key difference is that our consensus result is restricted to cliques under
+the scaled linear subfamily $\mathcal{F}_\alpha$, whereas
+Alvim et al.'s result holds for all continuous $R$-biases on
+arbitrary strongly connected graphs; extending our result to that full
+generality is an open problem.
+Psychological foundations for the bias functions considered
+here---confirmation, backfire, and authority---are discussed
+in~\cite{Aronson2010}.
+
+The Spiral-of-Silence models \SOMminus\ and \SOMplus\ were introduced
+in~\cite{aranda2024sound}, which also studies their formal convergence
+properties, establishing consensus in $n$-agent cliques for $n\ge 3$ and
+the period-2 oscillation pathology on two-agent cliques.
+Our Theorem~\ref{thm:cbsom-consensus-n2} resolves this pathology: any
+scaled-linear bias $f_\alpha$ with $\alpha\in(0,1)$ breaks the oscillation
+and restores consensus.
+The memory-based model \CBSOMplus\ exhibits substantially lower consensus
+rates than \CBSOMminus\ across all scales; this mirrors the behavior already
+observed for \SOMplus\ in~\cite{aranda2024sound} and confirms that memory
+acts as a structural barrier independent of the bias layer.
+
+The structural decoupling identified in
+Section~\ref{sec:analysis-structure}---the silence criterion of \CBSOMminus\
+depends only on raw opinion proximity and not on bias-filtered values---means
+that the consensus guarantees of~\cite{aranda2024sound} for \SOMminus\
+extend naturally to \CBSOMminus\ with $R$-region biases: wherever the
+silence dynamics create conditions for consensus in the base model, the bias
+layer does not interfere with those conditions.
+A comparable argument for \CBSOMplus\ remains open, as the memory layer
+couples historical opinion values with the current silence decision in a
+non-trivial way.

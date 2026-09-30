@@ -1,0 +1,101 @@
+
+
+\cbsomBounds*
+
+\begin{proof}\label{proof:cbsom-bounds}
+  Let $M=\max(\mathbf{B}^t)$ and $m=\min(\mathbf{B}^t)$.
+  Fix any agent $i\in A$.
+  By Eq.~\eqref{eq:cbsom-minus-b}:
+  \begin{equation}\label{eq:app-bounds-expand}
+    B_i^{t+1}
+    = B_i^t
+      + \underbrace{\sum_{j\in N^t(i)}
+          I_{ji}\cdot\beta_{i,j}(B_j^t - B_i^t)}_{=:\,\Sigma_i^t},
+  \end{equation}
+  where $N^t(i)=\{j\in N(i):S_j^t=1\}$.
+  We partition $N^t(i)$ into three disjoint sets:
+  \begin{align*}
+    P^+_i &= \{j\in N^t(i): B_j^t > B_i^t\},\\
+    P^-_i &= \{j\in N^t(i): B_j^t < B_i^t\},\\
+    P^0_i &= \{j\in N^t(i): B_j^t = B_i^t\}.
+  \end{align*}
+  For every $j\in P^0_i$ the term is zero since $\beta_{i,j}(0)=0$
+  (as $(0,0)\in R$).
+  We analyse the non-zero contributions.
+
+  \begin{pclaim}[Sign and magnitude of $\beta_{i,j}$ in $R$]
+    \label{claim:R-properties}
+    For $\beta_{i,j}\in R$ and $x\ne 0$:
+    (a)~$\operatorname{sign}(\beta_{i,j}(x))=\operatorname{sign}(x)$;
+    (b)~$|\beta_{i,j}(x)|\le|x|$.
+  \end{pclaim}
+
+  \noindent\emph{Proof of Claim.}
+  Property~(a) follows from the definition of $R$
+  (the graph of $\beta_{i,j}$ lies in the first and third quadrants
+  of $S=[-1,1]^2$~\cite{Alvim2024}).
+  Property~(b) follows from $|\beta_{i,j}(x)|\le|x|$ for all $(x,y)\in R$
+  with $y=\beta_{i,j}(x)$~\cite{Alvim2024}. \hfill$\square$
+
+  \medskip\noindent\textbf{Upper bound: $B_i^{t+1}\le M$.}
+
+  By Claim~\ref{claim:R-properties}(a):
+  each term with $j\in P^-_i$ satisfies
+  $I_{ji}\cdot\beta_{i,j}(B_j^t-B_i^t)\le 0$.
+  Dropping these non-positive contributions:
+  \begin{align}
+    \Sigma_i^t
+    &\le \sum_{j\in P^+_i} I_{ji}\cdot\beta_{i,j}(B_j^t-B_i^t).
+    \label{eq:app-sigma-upper}
+  \end{align}
+  By Claim~\ref{claim:R-properties}(b), for $j\in P^+_i$:
+  $\beta_{i,j}(B_j^t-B_i^t)\le B_j^t-B_i^t$.
+  Hence:
+  \begin{align}
+    B_i^{t+1}
+    &\le B_i^t
+      + \sum_{j\in P^+_i} I_{ji}(B_j^t-B_i^t)\notag\\
+    &= B_i^t\!\Bigl(1-\!\sum_{j\in P^+_i}\!I_{ji}\Bigr)
+      + \sum_{j\in P^+_i}\!I_{ji}\,B_j^t.
+    \label{eq:app-upper-convex}
+  \end{align}
+  By row-stochasticity (Eq.~\eqref{eq:row-stochastic}),
+  $\sum_{j\in P^+_i}I_{ji}\le
+   \sum_{j\in N(i)\cup\{i\}}I_{ji}=1$,
+  so the coefficient of $B_i^t$ is non-negative.
+  Expression~\eqref{eq:app-upper-convex} is therefore a convex
+  combination of $B_i^t$ and $\{B_j^t\}_{j\in P^+_i}$,
+  all of which lie in $(-\infty,M]$.
+  Therefore $B_i^{t+1}\le M$.
+
+  \medskip\noindent\textbf{Lower bound: $B_i^{t+1}\ge m$.}
+
+  By Claim~\ref{claim:R-properties}(a):
+  each term with $j\in P^+_i$ satisfies
+  $I_{ji}\cdot\beta_{i,j}(B_j^t-B_i^t)\ge 0$.
+  Dropping these non-negative contributions:
+  \begin{align}
+    \Sigma_i^t
+    &\ge \sum_{j\in P^-_i} I_{ji}\cdot\beta_{i,j}(B_j^t-B_i^t).
+    \label{eq:app-sigma-lower}
+  \end{align}
+  By Claim~\ref{claim:R-properties}(b), for $j\in P^-_i$
+  (where $B_j^t-B_i^t<0$): $\beta_{i,j}(B_j^t-B_i^t)\ge B_j^t-B_i^t$.
+  Hence:
+  \begin{align}
+    B_i^{t+1}
+    &\ge B_i^t
+      + \sum_{j\in P^-_i} I_{ji}(B_j^t-B_i^t)\notag\\
+    &= B_i^t\!\Bigl(1-\!\sum_{j\in P^-_i}\!I_{ji}\Bigr)
+      + \sum_{j\in P^-_i}\!I_{ji}\,B_j^t.
+    \label{eq:app-lower-convex}
+  \end{align}
+  By the same row-stochasticity argument,
+  \eqref{eq:app-lower-convex} is a convex combination of $B_i^t$
+  and $\{B_j^t\}_{j\in P^-_i}$, all of which lie in $[m,+\infty)$.
+  Therefore $B_i^{t+1}\ge m$.
+
+  \medskip\noindent Combining both bounds:
+  $\min(\mathbf{B}^t)\le B_i^{t+1}\le\max(\mathbf{B}^t)$
+  for all $i\in A$.
+\end{proof}

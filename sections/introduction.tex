@@ -1,0 +1,115 @@
+\section{Introduction}
+\label{sec:intro}
+
+The rise of digital social platforms has made \emph{opinion formation} a central
+problem in the computational study of social systems. Individuals broadcast their
+views, encounter those of others, and may revise their beliefs in response---a feedback
+loop whose long-run outcome, broad consensus or entrenched polarization, depends in
+subtle ways on the structure of the network and the behavioral rules governing each
+interaction. Formal mathematical models of this process allow one to characterize
+precisely the conditions under which each outcome arises.
+
+The DeGroot model~\cite{DeGroot1974} is one of the most prominent formalisms
+for social learning and opinion formation~\cite{Castellano2009}. A community is
+represented as a weighted directed graph, the \emph{influence graph}, whose
+nodes are \emph{agents} each holding an opinion in $[0,1]$---indicating the
+strength of their agreement with a given proposition---and whose edges encode
+how strongly agents influence one another. Agents repetitively revise their
+beliefs by taking a weighted average of the opinions of those who influence them.
+A fundamental theoretical result guarantees convergence to \emph{consensus}
+whenever the influence graph is strongly connected and agents retain
+non-zero self-influence~\cite{DeGroot1974,Castellano2009}. The significance
+of this result lies in the fact that consensus is a central indicator of a
+non-polarized community; indeed, the inability to reach consensus is a sign
+of a polarized community.
+
+The DeGroot model makes, however, two assumptions that can be overly constraining
+in real social network contexts. First, it assumes that agents \emph{always}
+express their opinions freely, disregarding the social pressure that may lead
+individuals to withhold their views. Second, it assumes that agents
+\emph{linearly} assimilate the opinions of those who influence them, ignoring
+the nonlinear psychological responses that shape how people receive and react
+to disagreement. Two well-documented phenomena challenge these assumptions,
+respectively: the \emph{Spiral of Silence} and \emph{cognitive biases}.
+
+The Spiral of Silence, introduced by Noelle-Neumann~\cite{NoelleNeumann1974,
+NoelleNeumann1984}, posits that individuals whose opinions are in the
+perceived minority tend to \emph{self-censor}: they withhold expression to
+avoid social isolation, thereby reinforcing the dominance of the majority
+view. Empirical studies confirm that this mechanism is active in both offline
+and online contexts~\cite{Glynn1997,Hampton2014,Hampton2019,Neubaum2018,Sohn2022},
+and simulation studies have shown that it can substantially distort the
+collective opinion landscape in digitally mediated
+networks~\cite{Sohn2022,Wang2013,Ross2019,Cabrera2021}. A formal treatment
+was recently provided by Aranda et al.~\cite{aranda2024sound}, who extended the DeGroot
+framework with silence mechanisms and derived conditions under which consensus
+forms or fails in the presence of self-censorship. That work is the direct
+predecessor of the present paper.
+
+Cognitive biases introduce a further layer of nonlinearity into opinion
+formation. When processing information that conflicts with their existing
+beliefs, individuals do not respond neutrally: \emph{confirmation bias} leads
+them to discount disagreeing views; the \emph{backfire effect} causes them to
+harden their positions when confronted with contrary evidence; \emph{authority
+bias} amplifies the influence of perceived high-status sources; and
+\emph{insular bias} reduces the perceived relevance of distant
+opinions~\cite{Aronson2010,Nyhan2010,Friedrich2020,Alvim2024}. These
+distortions systematically alter how agents assimilate and reject information,
+complicating consensus formation and fostering polarization in ways the
+standard DeGroot framework cannot capture.
+
+Alvim et al.~\cite{Alvim2024} introduced a formal framework that encodes these four biases
+as nonlinear \emph{bias functions} applied to opinion disagreements, and
+derived conditions under which consensus is preserved or fails in synchronous
+DeGroot dynamics. However, that framework does not incorporate silence
+mechanisms. Conversely, the model of Aranda et al.~\cite{aranda2024sound} addresses silence
+but not cognitive biases. \textbf{The central contribution of the present
+paper is to unify both dimensions}: we introduce two formal
+Cognitive-Bias Silence Opinion Models (CBSOM)---\CBSOMminus\ (memoryless) and \CBSOMplus\ (memory-based)---that
+embed cognitive bias functions into the Spiral-of-Silence opinion dynamics
+of Aranda et al.~\cite{aranda2024sound}, and systematically analyze when the consensus
+guarantees of the base model are preserved, altered, or broken under biased
+processing and silence.
+
+\noindent\textbf{Contributions.} The contributions of this paper are the
+following:
+
+\begin{enumerate}
+
+  \item We introduce \CBSOMminus\ and \CBSOMplus, two Cognitive-Bias Silence
+    Opinion Models that couple confirmation, backfire, authority, and insular
+    bias functions with memoryless and memory-based belief update rules,
+    respectively, within the Spiral-of-Silence--DeGroot framework
+    (Section~\ref{sec:model}).
+
+  \item We prove that the structural properties of the base Silence Opinion
+    Model~\cite{aranda2024sound}---specifically, the impossibility of
+    perpetual global silence and the monotonic contraction of opinion
+    extremes---are preserved under all continuous bias functions in the
+    \emph{receptive-resistant} region (Section~\ref{sec:analysis}).
+
+  \item For the \emph{scaled linear} bias subfamily
+    $\mathcal{F}_\alpha = \{f_\alpha(x)=\alpha x,\,\alpha\in(0,1)\}$,
+    we prove consensus in cliques for all $n\ge 2$, including resolution
+    of the period-2 oscillation pathology that affects dyadic cliques in
+    the base model (Section~\ref{sec:analysis}).
+
+  \item Through large-scale agent-based simulations on uniform and
+    non-uniform networks with up to $10^{6}$ agents, we show that
+    (i)~receptive-resistant biases (instantiated as $\mathrm{conf}(x)$ in our experiments) largely
+    preserve consensus behavior, (ii)~backfire and authority biases
+    robustly sustain polarization even in dense graphs, and
+    (iii)~network size and topology interact with bias type in nuanced
+    ways that are not predicted by small-scale analyses
+    (Section~\ref{sec:experiments}).
+
+\end{enumerate}
+
+\noindent\textbf{Organization.}
+Section~\ref{sec:model} introduces the theoretical background---the
+DeGroot model, the cognitive bias framework, and the base Silence Opinion
+Model of Aranda et al.~\cite{aranda2024sound}---and defines \CBSOMminus\ and \CBSOMplus.
+Section~\ref{sec:analysis} presents the formal analysis.
+Section~\ref{sec:experiments} reports the large-scale simulation study.
+Section~\ref{sec:conclusions} concludes and discusses related work.
+Complete proofs are collected in Appendix~\ref{app:proofs}.

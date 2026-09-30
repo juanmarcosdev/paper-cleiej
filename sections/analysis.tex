@@ -1,0 +1,377 @@
+\section{Analysis}
+\label{sec:analysis}
+
+In this section we study the formal properties of \CBSOMminus\ under
+cognitive bias functions from the Receptive-Resistant region $R$.
+We first establish the structural invariants that persist from \SOMminus\
+to \CBSOMminus\ (Section~\ref{sec:analysis-structure}), then introduce
+the \emph{scaled linear bias family} $\mathcal{F}_\alpha$
+(Section~\ref{sec:scaled-linear}), and finally prove consensus
+guarantees for clique graphs with $n\ge 2$
+(Section~\ref{sec:consensus-cliques}).
+
+% ===================================================================
+\subsection{Structural Properties under \texorpdfstring{$R$}{R}-Biases}
+\label{sec:analysis-structure}
+
+A central motivation for restricting to the Receptive-Resistant region
+$R$ is that continuous $R$-biases guarantee consensus in the synchronous
+DeGroot setting on strongly connected graphs~\cite{Alvim2024}. We ask
+whether the silence mechanism of \CBSOMminus\ preserves the structural
+invariants that underpin the \SOMminus\ consensus proofs~\cite{aranda2024sound}. We show that the answer is affirmative: the silence criterion in
+Eq.~\eqref{eq:cbsom-minus-s} depends solely on raw opinion proximity
+$|B_i^t-B_j^t|\le\tau_i$---not on the bias-filtered update
+value---so the cognitive bias layer \emph{decouples} from the silence
+decision.
+
+\begin{lemma}[All-silent state lasts at most one round]
+\label{lem:no-perpetual-silence}
+  Let $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ be a \CBSOMminus\ model.
+  For any $t\in\mathbb{N}$, if $S_i^t=0$ for all $i\in A$, then
+  $S_i^{t+1}=1$ for all $i\in A$.
+\end{lemma}
+
+\begin{proof}
+  If $S_i^t=0$ for all $i$, then $N^t(i)=\emptyset$ for every $i$,
+  so $\lceil|N^t(i)|/2\rceil=0$ and
+  $|\{j\in N^t(i)\mid B_i^t\sim_{\tau_i}B_j^t\}|=0$.
+  The inequality $0\le 0$ holds trivially, giving $S_i^{t+1}=1$.
+  Note that this argument is independent of the bias functions $\beta_{i,j}$.
+\end{proof}
+
+\begin{corollary}[No perpetual global silence in \CBSOMminus]
+\label{cor:no-perpetual-silence}
+  In any \CBSOMminus\ model, for every $t\in\mathbb{N}$ there exists
+  $i\in A$ such that $S_i^t=1$ or $S_i^{t+1}=1$.
+\end{corollary}
+
+The next result extends Lemma~\ref{lem:bounds} to \CBSOMminus.
+
+\begin{restatable}[Bounded opinions under \CBSOMminus]{lemma}{cbsomBounds}
+\label{lem:cbsom-bounds}
+  Let $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ be a \CBSOMminus\ model
+  with continuous bias functions $\beta_{i,j}\in R$ for all edges.
+  For any $t\in\mathbb{N}$ and all $i\in A$:
+  \[\min(\mathbf{B}^t)\;\le\; B_i^{t+1}\;\le\;\max(\mathbf{B}^t).\]
+\end{restatable}
+
+\begin{proof}[Proof sketch]
+  For any vocal neighbor $j\in N^t(i)$, let $x=B_j^t-B_i^t$.
+  Since $\beta_{i,j}\in R$: $\operatorname{sign}(\beta_{i,j}(x))=
+  \operatorname{sign}(x)$ and $|\beta_{i,j}(x)|\le|x|$, so the term
+  $I_{ji}\cdot\beta_{i,j}(x)$ moves $B_i^t$ toward $B_j^t$ without
+  overshooting.  The row-stochasticity of $I$ then yields the bound by a convexity argument.
+  Full proof in Appendix~\ref{app:proofs}.
+\end{proof}
+
+\begin{corollary}[Monotone extremes in \CBSOMminus]
+\label{cor:cbsom-mono}
+  In any \CBSOMminus\ model with continuous $R$-biases,
+  $\max(\mathbf{B}^t)$ is non-increasing and
+  $\min(\mathbf{B}^t)$ is non-decreasing in $t$.
+\end{corollary}
+
+\begin{theorem}[Limits of extremes in \CBSOMminus]
+\label{thm:cbsom-limits}
+  For any \CBSOMminus\ model with continuous $R$-biases, there exist
+  $U,L\in[0,1]$ with $L\le U$ such that
+  $\lim_{t\to\infty}\max(\mathbf{B}^t)=U$ and
+  $\lim_{t\to\infty}\min(\mathbf{B}^t)=L$.
+\end{theorem}
+
+\begin{proof}
+  $\{\max(\mathbf{B}^t)\}$ is bounded below by $0$ and non-increasing
+  (Corollary~\ref{cor:cbsom-mono});
+  $\{\min(\mathbf{B}^t)\}$ is bounded above by $1$ and non-decreasing.
+  Both limits exist by the Monotone Convergence
+  Theorem~\cite{Houshang2014}.
+\end{proof}
+
+% ===================================================================
+\FloatBarrier
+\subsection{Scaled Linear Bias Functions}
+\label{sec:scaled-linear}
+
+\begin{definition}[Scaled linear bias family]
+\label{def:scaled-linear}
+  The \emph{scaled linear bias family} is
+  \[\mathcal{F}_\alpha
+    =\{f_\alpha:[-1,1]\to[-1,1]\mid f_\alpha(x)=\alpha x,\;
+    \alpha\in(0,1)\}.\]
+\end{definition}
+
+The scalar $\alpha\in(0,1)$ encodes the degree of receptiveness:
+as $\alpha\to 1$, $f_\alpha$ approaches the DeGroot identity; as
+$\alpha\to 0$, it approaches the insular function.
+Figure~\ref{fig:bias-functions-scaled-family} shows the family
+alongside the DeGroot identity and the confirmation bias
+function of~\cite{Alvim2024} on the domain $S=[-1,1]^2$.
+
+\begin{figure}[!htbp]
+  \centering%
+  \includegraphics[width=0.54\textwidth]{bias_functions_scaled_family.pdf}
+  \caption{Bias functions on $S=[-1,1]^2$.
+    The identity $f(x)=x$ (DeGroot, green) marks the boundary between
+    the Malleability region $M$ and the Receptive-Resistant region $R$.
+    The confirmation bias $\mathrm{conf}(x)$ (blue,~\cite{Alvim2024})
+    exhibits nonlinear resistance to distant opinions.
+    Three members of $\mathcal{F}_\alpha$ are shown with
+    $\alpha\in\{0.1,0.5,0.9\}$ (magenta, cyan, dark-red).
+    In the first quadrant all scaled functions lie strictly below the
+    identity, and in the third quadrant strictly above it, confirming
+    membership in $R$}
+  \label{fig:bias-functions-scaled-family}
+\end{figure}
+
+\begin{lemma}[Scaled linear biases lie in $R$]\label{lem:in-R}
+  For every $\alpha\in(0,1)$, $f_\alpha\in R$.
+\end{lemma}
+
+\begin{proof}
+  For $x>0$: $f_\alpha(x)=\alpha x\in(0,x)$, so $(x,f_\alpha(x))\in R$.
+  For $x<0$: $f_\alpha(x)=\alpha x\in(x,0)$, so $(x,f_\alpha(x))\in R$.
+  For $x=0$: $f_\alpha(0)=0$, so $(0,0)\in R$.
+\end{proof}
+
+By Lemma~\ref{lem:in-R}, all results of
+Section~\ref{sec:analysis-structure} apply uniformly to
+$\mathcal{F}_\alpha$.  Moreover, each $f_\alpha$ induces a
+\emph{contraction} on the opinion spread
+$R_t=\max(\mathbf{B}^t)-\min(\mathbf{B}^t)$.
+
+\begin{restatable}[Geometric decay of opinion spread]{lemma}{geomDecay}
+\label{lem:contraction}
+  Let $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ be a \CBSOMminus\ model
+  on a clique with $n\ge 2$, with $\beta_{i,j}=f_{\alpha_{i,j}}$ for
+  all edges. Let
+  $\alpha_{\min}=\min_{(j,i)\in E}\alpha_{i,j}$ and
+  $I_{\min}=\min_{(j,i)\in E}I_{ji}$.
+  Then for every $\varepsilon>0$ there exists $t\in\mathbb{N}$ such
+  that $R_t < \varepsilon$.
+\end{restatable}
+
+\begin{proof}[Proof sketch]
+  Each round in which a vocal neighbor $j$ influences the max-agent $i$
+  decreases the maximum by at least $I_{\min}\cdot\alpha_{\min}\cdot R_t$,
+  since all terms in the update of the max-agent are non-positive.
+  By Corollary~\ref{cor:no-perpetual-silence}, such events occur
+  infinitely often.  The full proof (in Appendix~\ref{app:proofs})
+  also handles the case where the min-agent is persistently silent,
+  showing its opinion is pulled toward the maximum by vocal agents,
+  again forcing $R_t\to 0$.
+\end{proof}
+
+% ===================================================================
+\FloatBarrier
+\subsection{Consensus in Clique Graphs}
+\label{sec:consensus-cliques}
+
+% -------------------------------------------------------------------
+\subsubsection{Cliques with \texorpdfstring{$n\ge 3$}{n >= 3}}
+
+\begin{restatable}[Consensus in \CBSOMminus\ cliques with $n\ge 3$]{theorem}{cbsomConsensus}
+\label{thm:cbsom-consensus-n3}
+  Let $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ be a \CBSOMminus\ model
+  on an $n$-agent clique with $n\ge 3$ and
+  $\beta_{i,j}=f_{\alpha_{i,j}}\in\mathcal{F}_\alpha$ for all edges.
+  Then all agents converge to consensus.
+\end{restatable}
+
+\begin{proof}[Proof sketch]
+  By Theorem~\ref{thm:cbsom-limits}, limits $U$ and $L$ exist.
+  Suppose $U-L>0$.  By Lemma~\ref{lem:contraction}, $R_t<U-L$ for
+  some $t$; yet Corollary~\ref{cor:cbsom-mono} requires
+  $R_t\ge U-L$ for all $t$: contradiction.  Hence $U=L$, and the
+  Squeeze Theorem~\cite{Houshang2014} yields consensus.
+  Full proof in Appendix~\ref{app:proofs}.
+\end{proof}
+
+\begin{remark}
+  Theorem~\ref{thm:cbsom-consensus-n3} extends
+  Aranda et al.'s consensus result for \SOMminus\
+  cliques~\cite{aranda2024sound} (identity bias, $\alpha=1$) to the
+  full scaled linear family $\mathcal{F}_\alpha$, and lifts
+  Alvim et al.'s $R$-bias consensus
+  result~\cite{Alvim2024} from the synchronous DeGroot setting to the
+  Spiral-of-Silence setting.
+\end{remark}
+
+Figures~\ref{fig:clique3-conf} and~\ref{fig:clique3-scaled} illustrate
+consensus convergence on a 3-agent clique under $\mathrm{conf}(x)$
+and $f_\alpha$ biases, respectively.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{FourthExperimentClique3Confirmation.pdf}
+  \caption{Consensus on a 3-agent clique under \CBSOMminus\
+    with $\mathrm{conf}(x)$ bias on all edges
+    (Theorem~\ref{thm:cbsom-consensus-n3}).
+    All directed edges carry influence weight $0.5$;
+    initial beliefs are $\mathbf{B}^0=(1,0.5,0)$; $\tau_i=1$}
+  \label{fig:clique3-conf}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{FifthExperimentScaledConfirmationCliqueC.pdf}
+  \caption{Consensus on a 3-agent clique under \CBSOMminus\
+    with scaled linear bias $f_\alpha$, $\alpha=0.5$
+    (Theorem~\ref{thm:cbsom-consensus-n3}).
+    Same parameters as Figure~\ref{fig:clique3-conf}.
+    $f_\alpha$ converges faster than $\mathrm{conf}(x)$ due to
+    stronger linear attenuation of disagreement at all scales}
+  \label{fig:clique3-scaled}
+\end{figure}
+
+% -------------------------------------------------------------------
+\subsubsection{The Dyadic Case \texorpdfstring{$n=2$}{n = 2}}
+
+The \SOMminus\ model fails to converge on two-agent cliques,
+exhibiting period-2 oscillations~\cite{aranda2024sound}.
+Figure~\ref{fig:som-n2-oscillation} illustrates this pathology:
+with symmetric influence weights $I_{12}=I_{21}=1.0$ and
+$\tau_i=1$, agents permanently alternate their beliefs between $0$
+and $1$ without reaching any agreement.
+
+\begin{figure}[!htbp]
+  \centering%
+  \includegraphics[width=0.95\textwidth]{FirstExperimentN2.pdf}
+  \caption{Non-convergence counterexample for \SOMminus\ on a dyadic
+    clique ($n=2$).
+    Symmetric influence weights $I_{12}=I_{21}=1.0$,
+    $\mathbf{B}^0=(1,0)$, $\tau_i=1$.
+    Agents permanently oscillate between $0$ and $1$, alternating
+    speaking and silent roles; consensus is never reached.
+    This is the pathology that Theorem~\ref{thm:cbsom-consensus-n2}
+    resolves by introducing $\mathcal{F}_\alpha$-biases}
+  \label{fig:som-n2-oscillation}
+\end{figure}
+
+We now show that $\mathcal{F}_\alpha$-biases eliminate this pathology.
+
+\begin{lemma}[Persistent vocality for $n=2$]\label{lem:vocal-n2}
+  Consider \CBSOMminus\ on two agents $\{1,2\}$ with $\tau_1=\tau_2=1$.
+  Then $S_1^t=S_2^t=1$ for all $t\in\mathbb{N}$.
+\end{lemma}
+
+\begin{proof}
+  With $\tau_i=1$, the condition $|B_i^t-B_j^t|\le 1$ holds for all
+  $t$ since opinions lie in $[0,1]$.  Hence every agent always satisfies
+  the majority criterion and remains vocal.
+\end{proof}
+
+\begin{theorem}[Consensus under scaled linear biases for $n=2$]
+\label{thm:cbsom-consensus-n2}
+  Consider \CBSOMminus\ on a two-agent clique $\{1,2\}$ with
+  $I_{21},I_{12}>0$, biases $\beta_{i,j}(x)=\alpha_{i,j}x$ with
+  $\alpha_{i,j}\in(0,1)$, and $\tau_1=\tau_2=1$.
+  Then both agents converge to consensus.
+\end{theorem}
+
+\begin{proof}
+  By Lemma~\ref{lem:vocal-n2}, $S_j^t=1$ for all $t$.
+  Let $\lambda_{12}=I_{21}\alpha_{1,2}$ and
+  $\lambda_{21}=I_{12}\alpha_{2,1}$.
+  Eq.~\eqref{eq:cbsom-minus-b} reduces to:
+  \begin{align*}
+    B_1^{t+1}&=(1-\lambda_{12})B_1^t+\lambda_{12}B_2^t,\\
+    B_2^{t+1}&=\lambda_{21}B_1^t+(1-\lambda_{21})B_2^t.
+  \end{align*}
+  Let $D^t=B_1^t-B_2^t$.  Subtracting:
+  $D^{t+1}=\gamma D^t$ where
+  $\gamma=1-\lambda_{12}-\lambda_{21}$.
+  Since $\alpha_{i,j}\in(0,1)$ and $I_{ji}>0$ for both edges,
+  $\lambda_{12}=I_{21}\alpha_{1,2}\in(0,I_{21})$ and
+  $\lambda_{21}=I_{12}\alpha_{2,1}\in(0,I_{12})$ are both strictly
+  positive.  Hence $\lambda_{12}+\lambda_{21}\in(0,\,I_{21}+I_{12})$.
+  Since $I_{12},I_{21}\le 1$ and $\alpha_{i,j}<1$,
+  $\lambda_{12}+\lambda_{21}<2$; combined with strict positivity,
+  $\gamma=1-\lambda_{12}-\lambda_{21}\in(-1,1)$, so $|\gamma|<1$.
+  Therefore $D^t=\gamma^t D^0\to 0$, and both agents converge to
+  the same limit $v\in[0,1]$.
+\end{proof}
+
+\begin{remark}[Asymmetric bias case]\label{rem:n2-asymmetric}
+  Theorem~\ref{thm:cbsom-consensus-n2} requires $\alpha_{i,j}\in(0,1)$
+  for \emph{both} directed edges.  The asymmetric case---one edge with
+  $\alpha=1$ (identity, no bias) and one with $\alpha\in(0,1)$---falls
+  outside the stated hypotheses but is conjectured to converge; we
+  leave a formal treatment for future work.
+\end{remark}
+
+\begin{remark}[Recovery of the $n=2$ pathology]
+\label{rem:n2-recovery}
+  The period-2 oscillation of \SOMminus~\cite{aranda2024sound}
+  corresponds to $\gamma=-1$, requiring
+  $\lambda_{12}+\lambda_{21}=2$.
+  With $\alpha_{i,j}\in(0,1)$, $\lambda_{ij}=I_{ji}\alpha_{i,j}<1$
+  strictly, so $|\gamma|<1$ always.
+  In the symmetric case ($I_{12}=I_{21}=I$,
+  $\alpha_{1,2}=\alpha_{2,1}=\alpha$),
+  the contraction rate is $\gamma=1-2\alpha I$:
+  larger $\alpha$ produces oscillatory (but still convergent) dynamics,
+  while smaller $\alpha$ yields monotone smooth convergence.
+\end{remark}
+
+Figures~\ref{fig:n2-alpha01} and~\ref{fig:n2-alpha09} illustrate how
+$\alpha$ controls the qualitative character of convergence in
+Case~2 of Theorem~\ref{thm:cbsom-consensus-n2}.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{2alpha01.pdf}
+  \caption{Consensus on a two-agent clique under \CBSOMminus\ with
+    scaled linear bias $f_\alpha$, $\alpha=0.1$
+    (Case~2 of Theorem~\ref{thm:cbsom-consensus-n2}).
+    Parameters: $I_{12}=I_{21}=1.0$, $\mathbf{B}^0=(1,0)$, $\tau_i=1$.
+    With $\gamma=1-2\alpha I=0.8$ the opinion gap shrinks monotonically
+    (``inverse trumpet'' profile)}
+  \label{fig:n2-alpha01}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{2alpha09.pdf}
+  \caption{Consensus on a two-agent clique under \CBSOMminus\ with
+    scaled linear bias $f_\alpha$, $\alpha=0.9$.
+    Same parameters as Figure~\ref{fig:n2-alpha01}.
+    With $\gamma=-0.8$ the gap contracts oscillatorily but with
+    strictly decreasing amplitude, reminiscent of the \SOMminus\
+    pathology (Figure~\ref{fig:som-n2-oscillation}) but convergent.
+    The special case $\alpha=0.5$ reaches consensus
+    exactly at round~1: $B_1^1=B_2^1=0.5$}
+  \label{fig:n2-alpha09}
+\end{figure}
+
+% ===================================================================
+\FloatBarrier
+\subsection{Summary}
+\label{sec:analysis-summary}
+
+Table~\ref{tab:consensus-summary} summarizes the consensus landscape
+across models and clique sizes.
+
+\begin{table}[ht]
+\centering%
+\caption{Consensus in clique graphs: \SOMminus\ vs.\ \CBSOMminus\
+  with $\mathcal{F}_\alpha$-biases}
+\label{tab:consensus-summary}
+\begin{tabular}{lcc}
+  \hline
+  \textbf{Model} & \textbf{$n=2$} & \textbf{$n\ge 3$}\\
+  \hline
+  \SOMminus~\cite{aranda2024sound}
+    & oscillates & converges\\
+  \CBSOMminus\ $+$ $\mathcal{F}_\alpha$ \emph{(this work)}
+    & converges & converges\\
+  \hline
+\end{tabular}
+\end{table}
+
+The decoupling between bias and silence---formalized in
+Lemma~\ref{lem:no-perpetual-silence}---is the structural key: silence
+determines \emph{who speaks} while bias determines \emph{how the
+spoken opinion is absorbed}.  Consensus emerges from the joint action
+of the contraction induced by $\mathcal{F}_\alpha$
+(Lemma~\ref{lem:contraction}) and the impossibility of perpetual
+silence (Corollary~\ref{cor:no-perpetual-silence}).

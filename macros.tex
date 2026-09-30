@@ -1,0 +1,39 @@
+% ============================================================
+% MACROS — paste in main.tex preamble (before \begin{document})
+% ============================================================
+
+% ---------- Model name shorthands ----------------------------
+% ✅ Funciona en modo texto Y en modo math
+\newcommand{\CBSOMminus}{\ensuremath{\mathrm{CBSOM}^{-}}}
+\newcommand{\CBSOMplus}{\ensuremath{\mathrm{CBSOM}^{+}}}
+\newcommand{\SOMminus}{\ensuremath{\mathrm{SOM}^{-}}}
+\newcommand{\SOMplus}{\ensuremath{\mathrm{SOM}^{+}}}
+
+\newcommand{\CBSOM}{\ensuremath{\mathrm{CBSOM}}}
+\newcommand{\SOM}{\ensuremath{\mathrm{SOM}}}
+
+% ---------- Opinion / belief notation ------------------------
+% \Bt{i}{t}  → B_i^t
+\newcommand{\Bt}[2]{B_{#1}^{#2}}
+% \Bv^t (full opinion vector)
+\newcommand{\Bv}{\mathbf{B}}
+% \Sv^t (full silence vector)
+\newcommand{\Sv}{\mathbf{S}}
+% \hat opinion (last public) — used in SOM+ / CBSOM+
+\newcommand{\Bhat}[2]{\hat{B}_{#1}^{#2}}
+
+% ---------- Graph / neighbor notation ------------------------
+% \N{i}  → N(i)  (set of influencers of agent i)
+\newcommand{\N}[1]{N(#1)}
+% \Nt{i} → N^t(i)  (vocal influencers at time t)
+\newcommand{\Nt}[1]{N^t(#1)}
+
+% ---------- Tolerance proximity ------------------------------
+% x \simtau y  (|x-y| <= tau_i)
+\newcommand{\simtau}{\sim_{\tau_i}}
+
+% ---------- Clamping operator --------------------------------
+% \clamp{expr}  →  [expr]_0^1
+\newcommand{\clamp}[1]{\left[#1\right]_0^1}
+
+% ============================================================

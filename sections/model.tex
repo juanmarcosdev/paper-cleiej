@@ -1,0 +1,323 @@
+\section{Models}
+\label{sec:model}
+
+This section introduces the three building blocks of the proposed
+models---the DeGroot model~\cite{DeGroot1974}, the cognitive bias
+framework~\cite{Alvim2024}, and the Spiral-of-Silence opinion
+models~\cite{aranda2024sound}---and defines
+\CBSOMminus\ and \CBSOMplus, the Cognitive-Bias Silence Opinion
+Models that combine all three.
+
+% ===================================================================
+\subsection{The DeGroot Model}
+\label{sec:degroot}
+
+The DeGroot model~\cite{DeGroot1974} formalizes social learning as
+repeated weighted averaging over a fixed \emph{influence graph}.
+
+\begin{definition}[Influence Graph]\label{def:influence-graph}
+  An \emph{influence graph} is a weighted directed graph $G=(A,E,I)$
+  with $A=\{1,\ldots,n\}$, $n>1$, the set of \emph{agents};
+  $E\subseteq A\times A$ the set of directed edges; and
+  $I:A\times A\to[0,1]$ the weight function satisfying
+  $I(i,j)=0\iff(i,j)\notin E$ and, for each $i\in A$,
+  \begin{equation}\label{eq:row-stochastic}
+    \sum_{j\in N(i)\cup\{i\}}I(j,i)=1,
+  \end{equation}
+  where $N(i)=\{j\in A\setminus\{i\}:(j,i)\in E\}$ is the set of
+  \emph{influencers} of~$i$.
+\end{definition}
+
+Each agent $i$ holds an \emph{opinion} $B_i^t\in[0,1]$ at time $t$,
+interpreted as the degree of agreement with an underlying proposition
+(e.g., \emph{``AI poses a threat to humanity''}).
+The full opinion vector is $\mathbf{B}^t\in[0,1]^n$.
+The synchronous DeGroot update reads:
+\begin{equation}\label{eq:degroot}
+  B_i^{t+1} = \sum_{j=1}^n I_{ij}\,B_j^t,
+  \qquad\text{equivalently}\quad
+  \mathbf{B}^{t+1}=I\,\mathbf{B}^t,
+\end{equation}
+where $I=[I_{ij}]$ is row-stochastic.
+
+\begin{theorem}[DeGroot Consensus~\cite{DeGroot1974}]\label{thm:degroot}
+  If $I$ is row-stochastic and primitive (i.e., $\exists\,k$ such
+  that all entries of $I^k$ are positive), then there exists
+  $\mathbf{B}^*$ with identical components such that
+  $\lim_{t\to\infty}\mathbf{B}^t=\mathbf{B}^*$.
+\end{theorem}
+
+Despite its tractability, the DeGroot model makes two assumptions
+challenged by real social dynamics: it assumes that agents always
+express their opinions freely (no strategic silence), and it assumes
+\emph{linear} assimilation of neighbors' opinions, ignoring nonlinear
+psychological responses to disagreement~\cite{Alvim2024,NoelleNeumann1984}.
+Sections~\ref{sec:biases} and~\ref{sec:som} address each limitation
+in turn, before they are combined in
+Sections~\ref{sec:cbsom-minus}--\ref{sec:cbsom-plus}.
+
+% ===================================================================
+\subsection{Cognitive Bias Functions}
+\label{sec:biases}
+
+Following \cite{Alvim2024}, we model cognitive bias as a function that
+nonlinearly transforms the opinion disagreement between an agent and
+each of its influencers before the update is applied.
+
+\begin{definition}[Bias Function~\cite{Alvim2024}]\label{def:bias-fn}
+  A \emph{bias function} for agent $i$ with respect to agent $j$ is
+  a continuous map $\beta_{i,j}:[-1,1]\to[-1,1]$
+  that transforms the raw disagreement $x=B_j^t-B_i^t$.
+\end{definition}
+
+The bias-extended DeGroot update replaces the linear term
+$(B_j-B_i)$ with $\beta_{i,j}(B_j-B_i)$:
+\begin{equation}\label{eq:degroot-bias}
+  B_i^{t+1}
+  = B_i^t + \sum_{j\in N(i)} I_{ji}\,
+    \beta_{i,j}(B_j^t-B_i^t).
+\end{equation}
+The original formulation of~\cite{Alvim2024} includes an explicit $[\,\cdot\,]_0^1$
+clamp to enforce $B_i^{t+1}\in[0,1]$.  Throughout this paper all bias functions lie
+in the Receptive-Resistant region $R$; in that regime the update stays within $[0,1]$
+without clamping (see Lemma~\ref{lem:cbsom-bounds}), so we omit it from here on.
+The four representative bias functions examined in this paper are:
+\begin{itemize}
+  \item \textbf{Confirmation bias} (\textsl{conf}): agents attenuate
+    distant disagreements,
+    $\textsl{conf}(x)=x(1+\delta-|x|)/(1+\delta)$, $\delta>0$
+    \cite{Alvim2024,Nyhan2010}.
+  \item \textbf{Backfire effect} (\textsl{backf}): large disagreements
+    trigger repulsion, $\textsl{backf}(x)=-x^3$
+    \cite{Alvim2024,Friedrich2020}.
+  \item \textbf{Authority bias} (\textsl{fan}): agents follow
+    perceived authorities with maximal response,
+    $\textsl{fan}(x)=x/|x|$ for $x\ne 0$, $0$ otherwise
+    \cite{Alvim2024,Aronson2010}.
+  \item \textbf{Insular bias} (\textsl{ins}): agents ignore all
+    external influence, $\textsl{ins}(x)=0$ \cite{Alvim2024}.
+\end{itemize}
+
+\noindent\textbf{Bias regions.}
+Alvim et al.~\cite{Alvim2024} classify bias functions by the
+region of $S=[-1,1]^2$ in which the graph of $(x,\beta(x))$ lies:
+\begin{itemize}
+  \item \emph{Receptive-Resistant} ($R$): $0<|\beta(x)|<|x|$;
+    confirmation bias belongs to this region. In synchronous DeGroot
+    dynamics, consensus is preserved on strongly connected graphs
+    under continuous $R$-biases~\cite{Alvim2024}.
+  \item \emph{Malleability} ($M$): $|\beta(x)|\ge|x|$; authority
+    bias is the extreme case.
+  \item \emph{Backfire}: sign reversal,
+    $\operatorname{sign}(\beta(x))\ne\operatorname{sign}(x)$;
+    consensus typically fails.
+  \item \emph{Insular} ($I$): zero response, $\beta(x)=0$.
+\end{itemize}
+The $R$-region is central to this paper: its continuity condition
+provides the key analytical lever for extending consensus guarantees
+to the models introduced below.
+
+% ===================================================================
+\subsection{Spiral-of-Silence Opinion Models}
+\label{sec:som}
+
+The Spiral of Silence~\cite{NoelleNeumann1974,NoelleNeumann1984}
+posits that agents perceiving themselves as a minority tend to
+self-censor to avoid social isolation.
+Aranda et al.~\cite{aranda2024sound} formalize this
+mechanism as an augmentation of the DeGroot framework.
+
+\begin{definition}[Silence Opinion Model~\cite{aranda2024sound}]
+\label{def:som}
+  A \emph{Silence Opinion (SO) model} is a quadruple
+  $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$, where $G=(A,E,I)$ is an
+  influence graph, $\mathbf{B}^0\in[0,1]^n$ is the initial opinion
+  vector, $\mathbf{S}^0\in\{0,1\}^n$ is the initial silence vector
+  ($S_i^t=1$ meaning agent $i$ is \emph{vocal} at time $t$), and
+  $\mu_G:[0,1]^n\times\{0,1\}^n\times\mathbb{N}
+   \to[0,1]^n\times\{0,1\}^n$ is the joint update function.
+\end{definition}
+
+\begin{definition}[Consensus]\label{def:consensus}
+  Agents in an SO model \emph{reach consensus} if $\exists\,v\in[0,1]$
+  such that $\lim_{t\to\infty}B_i^t=v$ for all $i\in A$.
+\end{definition}
+
+\subsubsection{Memoryless Model \texorpdfstring{\SOMminus}{SOM-}}
+\label{sec:som-minus}
+
+In \SOMminus, silent agents contribute nothing to their neighbors'
+updates~\cite{aranda2024sound}. Writing $x\sim_{\tau_i}y$ iff
+$|x-y|\le\tau_i$ for tolerance radius $\tau_i\in[0,1]$:
+\begin{align}
+  B_i^{t+1} &= B_i^t
+    + \sum_{j\in N(i)}I_{ji}\cdot S_j^t\cdot(B_j^t-B_i^t),
+  \label{eq:som-minus-b}\\
+  S_i^{t+1} &=
+  \begin{cases}
+    1 & \text{if }\;\bigl\lceil|N^t(i)|/2\bigr\rceil
+        \le\bigl|\{j\in N^t(i)\mid B_i^t\sim_{\tau_i}B_j^t\}\bigr|,\\
+    0 & \text{otherwise,}
+  \end{cases}
+  \label{eq:som-minus-s}
+\end{align}
+where $N^t(i)=\{j\in N(i):S_j^t=1\}$.
+Intuitively, agent $i$ goes silent when a majority of its currently
+vocal neighbors hold opinions too far from its own.
+
+\subsubsection{Memory-Based Model \texorpdfstring{\SOMplus}{SOM+}}
+\label{sec:som-plus}
+
+In \SOMplus, silent agents retain influence through the last opinion
+they publicly expressed~\cite{aranda2024sound}.
+Assuming $\mathbf{S}^0=\mathbf{1}_n$, let
+$t_j'=\max\{u\le t:S_j^u=1\}$ and
+$\hat{B}_j^t=B_j^{t_j'}$ (\emph{last public opinion} of agent~$j$):
+\begin{align}
+  B_i^{t+1} &= B_i^t
+    + \sum_{j\in N(i)}I_{ji}\cdot(\hat{B}_j^t-B_i^t),
+  \label{eq:som-plus-b}\\
+  S_i^{t+1} &=
+  \begin{cases}
+    1 & \text{if }\;\bigl\lceil|N(i)|/2\bigr\rceil
+        \le\bigl|\{j\in N(i)\mid B_i^t\sim_{\tau_i}\hat{B}_j^t\}\bigr|,\\
+    0 & \text{otherwise.}
+  \end{cases}
+  \label{eq:som-plus-s}
+\end{align}
+Unlike \SOMminus, \SOMplus\ is non-Markovian: evolution depends on
+the history of silence events through $\hat{B}_j^t$.
+
+\subsubsection{Key Results for \texorpdfstring{\SOMminus}{SOM-}}
+\label{sec:som-results}
+
+The following results from~\cite{aranda2024sound}
+underpin the analysis in Section~\ref{sec:analysis}.
+
+\begin{lemma}[Bounded opinions~\cite{aranda2024sound}]
+\label{lem:bounds}
+  For any \SOMminus\ model and all $t$:
+  $\min(\mathbf{B}^t)\le B_i^{t+1}\le\max(\mathbf{B}^t)$
+  for all $i\in A$.
+\end{lemma}
+
+\begin{corollary}[Monotone extremes~\cite{aranda2024sound}]
+\label{cor:mono}
+  In any \SOMminus\ model, $\max(\mathbf{B}^t)$ is non-increasing
+  and $\min(\mathbf{B}^t)$ is non-decreasing in~$t$.
+\end{corollary}
+
+\begin{theorem}[Consensus in \SOMminus\ cliques~\cite{aranda2024sound}]
+\label{thm:som-consensus}
+  Let $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ be a \SOMminus\ model
+  on an $n$-agent clique with $n\ge 3$.
+  Then all agents converge to consensus.
+\end{theorem}
+
+% ===================================================================
+\subsection{\texorpdfstring{\CBSOMminus}{CBSOM-}: Memoryless with Cognitive Biases}
+\label{sec:cbsom-minus}
+
+\begin{definition}[\CBSOMminus]\label{def:cbsom-minus}
+  An SO model $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ is
+  \emph{memoryless with cognitive biases} (\CBSOMminus) if,
+  for each $i\in A$ and $t\in\mathbb{N}$:
+  \begin{align}
+    B_i^{t+1} &= B_i^t
+      + \sum_{j\in N(i)} I_{ji}\cdot S_j^t
+        \cdot\beta_{i,j}(B_j^t - B_i^t),
+    \label{eq:cbsom-minus-b}\\
+    S_i^{t+1} &=
+    \begin{cases}
+      1 & \text{if }\;\bigl\lceil|N^t(i)|/2\bigr\rceil
+          \le\bigl|\{j\in N^t(i)\mid
+            B_i^t\sim_{\tau_i}B_j^t\}\bigr|,\\
+      0 & \text{otherwise,}
+    \end{cases}
+    \label{eq:cbsom-minus-s}
+  \end{align}
+  where each $\beta_{i,j}:[-1,1]\to[-1,1]$ is a bias function.
+\end{definition}
+
+Equation~\eqref{eq:cbsom-minus-b} extends \eqref{eq:som-minus-b}
+by replacing the linear disagreement term $(B_j^t-B_i^t)$ with the
+biased term $\beta_{i,j}(B_j^t-B_i^t)$. The silence factor $S_j^t$
+continues to zero out silent agents' contributions entirely; thus,
+\emph{bias determines how vocal neighbors are processed, while
+silence determines which neighbors are visible}---the two mechanisms
+remain structurally decoupled.
+
+\begin{remark}[DeGroot as a special case]\label{rem:degroot-cbsom-minus}
+  Setting $\tau_i=1$, $\mathbf{S}^0=\mathbf{1}_n$, and
+  $\beta_{i,j}(x)=x$ recovers the classical DeGroot update from
+  \CBSOMminus.
+\end{remark}
+
+% ===================================================================
+\subsection{\texorpdfstring{\CBSOMplus}{CBSOM+}: Memory-Based with Cognitive Biases}
+\label{sec:cbsom-plus}
+
+\begin{definition}[\CBSOMplus]\label{def:cbsom-plus}
+  An SO model $(G,\mathbf{B}^0,\mathbf{S}^0,\mu_G)$ is
+  \emph{memory-based with cognitive biases} (\CBSOMplus) if
+  $\mathbf{S}^0=\mathbf{1}_n$ and, for each $i\in A$ and
+  $t\in\mathbb{N}$:
+  \begin{align}
+    B_i^{t+1} &= B_i^t
+      + \sum_{j\in N(i)} I_{ji}
+        \cdot\beta_{i,j}(\hat{B}_j^t - B_i^t),
+    \label{eq:cbsom-plus-b}\\
+    S_i^{t+1} &=
+    \begin{cases}
+      1 & \text{if }\;\bigl\lceil|N(i)|/2\bigr\rceil
+          \le\bigl|\{j\in N(i)\mid
+            B_i^t\sim_{\tau_i}\hat{B}_j^t\}\bigr|,\\
+      0 & \text{otherwise,}
+    \end{cases}
+    \label{eq:cbsom-plus-s}
+  \end{align}
+  where $\hat{B}_j^t=B_j^{t_j'}$ with
+  $t_j'=\max\{u\le t:S_j^u=1\}$.
+\end{definition}
+
+\CBSOMplus\ applies the bias function to historical public opinions:
+$\beta_{i,j}$ filters how agent $i$ assimilates the last expressed
+belief of neighbor~$j$, regardless of whether $j$ is currently vocal.
+This creates a temporal-cognitive coupling absent in \CBSOMminus:
+a silent agent's frozen opinion is processed through $i$'s cognitive
+lens at every subsequent step until that agent speaks again.
+
+\begin{remark}[DeGroot as a special case]\label{rem:degroot-cbsom-plus}
+  Setting $\tau_i=1$ and $\beta_{i,j}(x)=x$ recovers DeGroot from
+  \CBSOMplus: perpetual vocality ensures $\hat{B}_j^t=B_j^t$ for
+  all $j,t$, reducing \eqref{eq:cbsom-plus-b} to \eqref{eq:degroot}.
+\end{remark}
+
+% ===================================================================
+\subsection{Relationship Among Models}
+\label{sec:model-relations}
+
+Table~\ref{tab:models} summarizes the model hierarchy.
+DeGroot is a special case of both \CBSOMminus\ and \CBSOMplus\
+(Remarks~\ref{rem:degroot-cbsom-minus}--\ref{rem:degroot-cbsom-plus});
+the \SOM\ models are special cases of the \CBSOM\ models obtained
+by setting $\beta_{i,j}(x)=x$. Any result proved for \CBSOM\ with
+identity biases therefore recovers the corresponding \SOM\ result.
+
+\begin{table}[!htbp]
+\centering
+\caption{Hierarchy of opinion models.
+  $\checkmark$ = mechanism present; $-$ = absent or identity}
+\label{tab:models}
+\begin{tabular}{lccc}
+  \hline
+  \textbf{Model} & \textbf{Silence} & \textbf{Memory} & \textbf{Bias $\beta_{i,j}$}\\
+  \hline
+  DeGroot~\cite{DeGroot1974}               & $-$          & $-$  & identity\\
+  \SOMminus~\cite{aranda2024sound}         & memoryless   & $-$  & identity\\
+  \SOMplus~\cite{aranda2024sound}         & memory-based & $\checkmark$ & identity\\
+  \CBSOMminus\ \emph{(this work)}          & memoryless   & $-$  & general\\
+  \CBSOMplus\ \ \emph{(this work)}         & memory-based & $\checkmark$ & general\\
+  \hline
+\end{tabular}
+\end{table}
