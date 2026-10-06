@@ -17,22 +17,22 @@
   \end{equation}
   In particular, for all $t\ge T_0$:
   \begin{equation}\label{eq:app-Rt-lower}
-    R_t = \max(\mathbf{B}^t)-\min(\mathbf{B}^t)
+    \Delta_t = \max(\mathbf{B}^t)-\min(\mathbf{B}^t)
     \;\ge\;
     \Bigl(U-\tfrac{\delta}{4}\Bigr)-\Bigl(L+\tfrac{\delta}{4}\Bigr)
     = \delta - \tfrac{\delta}{2} = \tfrac{\delta}{2} > 0.
   \end{equation}
-  Thus $R_t\ge\delta/2>0$ for all $t\ge T_0$.
+  Thus $\Delta_t\ge\delta/2>0$ for all $t\ge T_0$.
 
   \medskip\noindent\textbf{Contradiction via Lemma~\ref{lem:contraction}.}
 
   Applying Lemma~\ref{lem:contraction} with $\varepsilon=\delta/2$
   (which is positive), there exists $t^*\in\mathbb{N}$ such that
-  $R_{t^*}<\delta/2$.
-  Taking $t^{**}=\max(T_0,t^*)$ and using the fact that $\{R_t\}$ is
+  $\Delta_{t^*}<\delta/2$.
+  Taking $t^{**}=\max(T_0,t^*)$ and using the fact that $\{\Delta_t\}$ is
   non-increasing (Corollary~\ref{cor:cbsom-mono}):
-  \[R_{t^{**}}\le R_{t^*}<\frac{\delta}{2}.\]
-  But $t^{**}\ge T_0$ implies $R_{t^{**}}\ge\delta/2$
+  \[\Delta_{t^{**}}\le \Delta_{t^*}<\frac{\delta}{2}.\]
+  But $t^{**}\ge T_0$ implies $\Delta_{t^{**}}\ge\delta/2$
   by~\eqref{eq:app-Rt-lower}: contradiction.
 
   \medskip\noindent\textbf{Conclusion.}

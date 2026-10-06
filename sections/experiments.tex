@@ -1,20 +1,23 @@
 \section{Experimental Evaluation}
 \label{sec:experiments}
 
-We corroborate the theoretical results of Section~\ref{sec:analysis}
-through large-scale simulations of \CBSOMminus\ and \CBSOMplus\ across
-eight network sizes and a full range of connectivity levels.  The goals
-are threefold: (i) to confirm empirically that only $R$-region bias
-functions support consensus; (ii) to quantify the joint effect of
-network size and density on the consensus threshold; and (iii) to
-characterize how memory amplifies or suppresses these effects.
+The results of Section~\ref{sec:analysis} cover \CBSOMminus\ on cliques
+with scaled linear biases. In this section, we study through simulation
+the settings that those results do not cover: scale-free graphs,
+biases outside the region $R$, mixtures of biases, and the memory-based
+model \CBSOMplus. We run both models across eight network sizes and a
+full range of connectivity levels. Our goals are threefold:
+(i)~to test whether only $R$-region bias functions support consensus;
+(ii)~to quantify the joint effect of network size and density on the
+consensus threshold; and (iii)~to characterize how memory changes these
+effects.
 
 % -------------------------------------------------------------------
 \subsection{Simulation Setup}
 \label{sec:exp-setup}
 
 The simulator generates scale-free graphs by preferential attachment
-with degree-distribution exponent $\gamma=2.5$, a value in the
+with degree-distribution exponent $\gamma=2.5$. This value lies in the
 empirically documented range for scale-free social
 networks~\cite{Barabasi1999,Newman2003,Clauset2009}.
 The parameter grid is:
@@ -34,58 +37,59 @@ The parameter grid is:
   \item \textbf{Initial opinions:} $B_i^0\sim\mathcal{U}[0,1]$.
 \end{enumerate}
 
-\noindent\textbf{Metrics.}
+\paragraph{Metrics.}
 The \emph{Consensus Rate} $\mathrm{CR}$
-is the fraction of runs that converge; the
-\emph{Mean Convergence Time} $\mathrm{MCT}$ is the average round
-count over converging runs.  We report $\mathrm{CR}$ throughout.\footnote{All experiments were run on an Intel~i7-1255U machine with 32\,GB RAM and a 512\,GB NVMe SSD.}
+is the fraction of runs that converge. The
+\emph{Mean Convergence Time} $\mathrm{MCT}$ is the average number of
+rounds over converging runs. We report $\mathrm{CR}$ throughout.\footnote{All experiments were run on an Intel~i7-1255U machine with 32\,GB RAM and a 512\,GB NVMe SSD.}
 
 % -------------------------------------------------------------------
 \subsection{Uniform Networks}
 \label{sec:exp-uniform}
 
 A \emph{uniform} network assigns the same bias type to every edge and
-the same silence model to every agent.  This isolates the contribution
-of each cognitive region before mixing is considered.
+the same silence model to every agent. This setting isolates the
+contribution of each bias region before we consider mixtures.
 
 \paragraph{Memoryless dynamics ($\CBSOMminus$).}
 Figure~\ref{fig:heatmap-uniform} (top row) summarizes the full
-$(n,\text{density})$ grid.  Both $\SOMminus$ and $\CBSOMminus$
-(Confirmation) transition from near-zero to near-$100\%$ consensus as
-density increases; the Confirmation panel is always at least as light
-as the $\SOMminus$ panel, confirming that $R$-region biases act as
-\emph{consensus accelerators}.  The advantage is most pronounced at the
-transition: at $n=10^6$ and density~4, $\CBSOMminus$ (Confirmation)
-achieves $70\%$ versus $10\%$ for $\SOMminus$ (Figure~\ref{fig:curves}).
-The Backfire panel is uniformly black (zero consensus at every scale and
-density), and Authority is likewise zero except for negligible events in
-a 10-agent network.  This pattern is consistent with
+$(n,\text{density})$ grid. Both $\SOMminus$ and $\CBSOMminus$
+(Confirmation) move from near-zero to near-$100\%$ consensus as
+density increases. The Confirmation panel is always at least as light
+as the $\SOMminus$ panel: $R$-region biases act as
+\emph{consensus accelerators}. The advantage is largest at the
+transition. At $n=10^6$ and density~4, the consensus rate is $70\%$ for
+$\CBSOMminus$ (Confirmation) and $10\%$ for $\SOMminus$
+(Figure~\ref{fig:curves}).
+The Backfire panel is uniformly black, i.e., there is no consensus at any
+scale or density. Authority also yields zero consensus, except for
+negligible events in a 10-agent network. This pattern is consistent with
 Theorems~\ref{thm:cbsom-consensus-n3} and~\ref{thm:cbsom-consensus-n2},
-which guarantee consensus only for $R$-region biases.  We note, however, that at $n=10^6$ the sample
-is too small (10 runs per configuration) to assert an absolute
-dichotomy; these results should be taken as indicative.
+which guarantee consensus only for $R$-region biases. However, at
+$n=10^6$ the sample is too small (10 runs per configuration) to assert
+an absolute dichotomy; these results should be taken as indicative.
 
-The consensus threshold grows sub-linearly with $n$: density~2 suffices
+The consensus threshold grows sub-linearly with $n$. Density~2 suffices
 for $n \le 100$, density~3--4 for $n \in [10^3, 10^5]$, and density~4--5
-for $n=10^6$.  The rightward shift of the S-curve across scales is
-visible in Figure~\ref{fig:curves}: as $n$ increases, the transition
-from zero to full consensus requires one or two additional neighbors
-per agent, and the saturation level approaches $100\%$ once the
-threshold is crossed (in all observed runs for $n \le 10^5$, where
-run counts are 50 or greater).
+for $n=10^6$. Figure~\ref{fig:curves} shows the corresponding rightward
+shift of the S-curve: as $n$ increases, the transition from zero to full
+consensus requires one or two additional neighbors per agent. Once the
+threshold is crossed, the consensus rate approaches $100\%$. This holds
+in all observed runs for $n \le 10^5$, where each configuration has at
+least 50 runs.
 
 \paragraph{Memory-based dynamics ($\CBSOMplus$).}
-Figure~\ref{fig:heatmap-uniform} (bottom row) contrasts sharply with
-the top row.  For $n \le 100$, the Confirmation panel retains a faint
+The bottom row of Figure~\ref{fig:heatmap-uniform} differs markedly
+from the top row. For $n \le 100$, the Confirmation panel retains a faint
 non-zero region at low densities (e.g., $19.9\%$ at $n=50$,
 density~2), while $\SOMplus$ is already near zero.
 For $n=500$, $\CBSOMplus$ (Confirmation) peaks at $4.9\%$; for
-$n=1{,}000$ it falls to $3.8\%$ and is confined to densities $4$--$7$.
-Beyond $n=10^4$ no memory-based configuration, including Confirmation,
-achieves a single consensus run under any density.
-Figure~\ref{fig:memory-penalty} makes this collapse visible: the
+$n=1{,}000$, it falls to $3.8\%$ and is confined to densities $4$--$7$.
+Beyond $n=10^4$, no memory-based configuration, including Confirmation,
+reaches consensus in a single run at any density.
+Figure~\ref{fig:memory-penalty} makes this collapse visible. The
 Confirmation advantage that sustains high consensus in the left panel
-($\CBSOMminus$) dissolves entirely in the right panel ($\CBSOMplus$)
+($\CBSOMminus$) disappears in the right panel ($\CBSOMplus$)
 as $n$ grows.
 
 \begin{figure}[!htbp]
@@ -131,8 +135,8 @@ as $n$ grows.
 \label{sec:exp-nonuniform}
 
 \emph{Non-uniform} networks assign different bias types to different
-edges according to four mixed configurations (proportions refer to
-fraction of edges):
+edges. We consider four mixed configurations; the proportions refer to
+fractions of edges:
 \begin{enumerate}
   \item[(i)]  $\SOMminus+\CBSOMminus(\text{Conf.})$, $70\%/30\%$
   \item[(ii)] $\CBSOMminus(\text{Conf.})+\CBSOMminus(\text{Back.})$,
@@ -142,70 +146,66 @@ fraction of edges):
   \item[(iv)] $\SOMminus+\CBSOMminus(\text{Back.})$, $90\%/10\%$
 \end{enumerate}
 
-\noindent\textbf{Rationale for the choice of proportions.}
-The four configurations above were selected heuristically rather than
-calibrated to empirically measured distributions of cognitive biases in
-real social networks; to our knowledge, no such data are available at
-the resolution required to assign per-edge bias types.
-Instead, the proportions reflect the following design logic, which
-builds directly on the uniform-network results of
-Section~\ref{sec:exp-uniform} and on the observation---already present
-in the foundational Spiral-of-Silence model of
-Aranda et al.~\cite{aranda2024sound}---that consensus is structurally difficult to
-achieve even in the absence of cognitive biases.
-Because uniform Backfire and Authority configurations yield zero
-consensus at every scale and density, pure non-$R$ configurations
-provide no interesting boundary to explore; the relevant question is
-how small a disruptive minority is sufficient to destroy consensus
-that would otherwise form.
-Configuration~(iv) ($10\%$ Backfire) is therefore a
-\emph{contamination} scenario: it asks whether a marginal fraction of
-adversarial edges can override an otherwise consensus-forming majority.
-Configuration~(ii) ($20\%$ Backfire) raises the disruptive load while
-keeping a receptive-resistant supermajority, probing the threshold
-at which the $\mathrm{conf}(x)$-dominated updating can no longer absorb
-the opposing force.
+\paragraph{Rationale for the choice of proportions.}
+We selected the four configurations heuristically. They are not
+calibrated to measured distributions of cognitive biases in real social
+networks; to our knowledge, no such data exist at the resolution
+required to assign a bias type to each edge. Instead, the proportions
+follow from the uniform-network results of Section~\ref{sec:exp-uniform}
+and from an observation already present in the Spiral-of-Silence model
+of Aranda et al.~\cite{aranda2024sound}: consensus is structurally
+difficult to achieve even without cognitive biases.
+
+Uniform Backfire and Authority configurations yield zero consensus at
+every scale and density. Pure non-$R$ configurations therefore offer no
+interesting boundary to explore. The relevant question is how small a
+disruptive minority suffices to destroy consensus that would otherwise
+form. Configuration~(iv) ($10\%$ Backfire) is a \emph{contamination}
+scenario: it asks whether a marginal fraction of adversarial edges can
+override an otherwise consensus-forming majority. Configuration~(ii)
+($20\%$ Backfire) raises the disruptive load but keeps a
+receptive-resistant supermajority. It probes the point at which updating
+dominated by $\mathrm{conf}(x)$ can no longer absorb the opposing force.
 Configuration~(iii) ($40\%$ Authority) places the two regimes in
-near-balance, testing whether hierarchical influence at substantial
-scale is compatible with global agreement.
-Finally, configuration~(i) ($30\%$ $\mathrm{conf}(x)$, $70\%$
-unbiased) asks the complementary question: can a receptive-resistant
-minority \emph{rescue} or amplify consensus in an otherwise
-unbiased network that already struggles to converge at large scales?
-The proportions were thus chosen to span a gradient from marginal
-perturbation to near-parity, covering regimes in which consensus is
-expected to be fragile, recoverable, or structurally precluded.
-We acknowledge that heterogeneous bias distributions that vary by
-agent role, community membership, or temporal dynamics may shift
-these thresholds, and leave the calibration of proportions to
-empirical social-network data as a direction for future work.
+near-balance. It tests whether substantial hierarchical influence is
+compatible with global agreement. Finally, configuration~(i)
+($30\%$ $\mathrm{conf}(x)$, $70\%$ unbiased) asks the complementary
+question: can a receptive-resistant minority \emph{rescue} or amplify
+consensus in an unbiased network that already struggles to converge at
+large scales?
+
+The proportions thus span a gradient from marginal perturbation to
+near-parity. They cover regimes in which consensus is expected to be
+fragile, recoverable, or structurally precluded. Bias distributions
+that vary by agent role, community membership, or time may shift these
+thresholds. We leave the calibration of proportions to empirical
+social-network data for future work.
 
 \paragraph{Memoryless dynamics.}
 Figure~\ref{fig:heatmap-nonuniform} shows the results.
-Configuration~(i)---an $R$-region majority---closely mirrors the
-uniform Confirmation baseline: consensus reaches $97\%$ by density~3
-for $n=500$, and the transition shifts rightward to density~5 only
-for $n=10^6$.  This demonstrates that a $70\%$ $R$-region fraction is
-sufficient to preserve consensus robustness even when $30\%$ of edges
-carry no bias.
+Configuration~(i) closely mirrors the uniform Confirmation baseline.
+Consensus reaches $97\%$ by density~3 for $n=500$, and the transition
+shifts rightward to density~5 only for $n=10^6$. Hence mixing
+confirmation-biased and unbiased edges in a $30/70$ proportion
+preserves the robustness of consensus.
 
 Configurations (ii)--(iv) collapse to near-zero consensus at every
-scale.  At $n=100$, configurations (ii) and (iv) produce at most
-$2\%$--$3\%$ consensus across all densities; for $n \ge 500$ consensus
-is identically zero.  Remarkably, a mere $10\%$ share of Backfire edges
+scale. At $n=100$, configurations (ii) and (iv) produce at most
+$2\%$--$3\%$ consensus across all densities; for $n \ge 500$, consensus
+is identically zero. A $10\%$ share of Backfire edges
 (configuration~iv) suffices to eliminate consensus that would otherwise
-occur with probability approaching $100\%$.  The \emph{robustness
-asymmetry} is thus highly directional: $R$-region edges act as
-consensus catalysts, while non-$R$ edges act as consensus killers that
-cannot be neutralized by a surrounding $R$-region majority.
+occur in almost every run. This \emph{robustness asymmetry} has a clear
+direction. Edges in $R$ act as consensus catalysts, whereas edges
+outside $R$ prevent consensus, and a surrounding majority of $R$-region
+edges cannot neutralize them.
 
 \paragraph{Memory-based dynamics.}
 In non-uniform memory-based networks, consensus is essentially absent.
 The $\SOMplus+\CBSOMplus(\text{Conf.})$ $70/30$ mixture produces
-sporadic events only for $n \le 100$ (at most $30\%$, density~4); for
-$n \ge 500$ no run converges under any mixed memory-based configuration.
-Memory thus amplifies the disruptive effect of non-$R$ edges to a
-structural impossibility at scale.
+sporadic consensus only for $n \le 100$ (at most $30\%$, density~4).
+For $n \ge 500$, no run converges under any mixed memory-based
+configuration. Memory thus amplifies the disruptive effect of non-$R$
+edges: at scale, we observed no consensus at all.
 
 \begin{figure}[!htbp]
   \centering
@@ -213,10 +213,10 @@ structural impossibility at scale.
   \caption{Consensus rate for \emph{non-uniform} memoryless networks
     ($\CBSOMminus$) over the full $(n, \text{density})$ grid.  Only the
     $\SOMminus+\CBSOMminus(\text{Conf.})$ $70/30$ mixture (leftmost panel)
-    achieves near-$100\%$ consensus at moderate density; all configurations
-    containing any fraction of Backfire or Authority edges collapse to
-    near-zero at every scale, illustrating the sharp robustness asymmetry
-    between $R$-region and non-$R$-region influence}
+    achieves near-$100\%$ consensus at moderate density. Every
+    configuration that contains Backfire or Authority edges collapses to
+    near-zero consensus at every scale. This illustrates the robustness
+    asymmetry between influence inside and outside the region $R$}
   \label{fig:heatmap-nonuniform}
 \end{figure}
 
@@ -226,12 +226,12 @@ structural impossibility at scale.
 \label{sec:exp-relative}
 
 The experiments in Sections~\ref{sec:exp-uniform}
-and~\ref{sec:exp-nonuniform} parameterize connectivity by an absolute
-neighbor count $k\in\{1,\dots,9\}$, which represents markedly
-different levels of social exposure as network size grows.
-To assess whether the observed effects depend on this choice, we
-complement those results with a \emph{relative-density} analysis in
-which each agent's neighborhood is fixed to a fraction
+and~\ref{sec:exp-nonuniform} measure connectivity by an absolute
+neighbor count $k\in\{1,\dots,9\}$. The same count represents very
+different levels of social exposure as the network grows.
+To assess whether the observed effects depend on this choice, we add a
+\emph{relative-density} analysis. In it, the neighborhood of each agent
+is a fixed fraction
 $\rho\in\{10\%,\,25\%,\,50\%,\,75\%,\,100\%\}$ of the maximum
 feasible degree $n-1$.
 The $100\%$ condition is the complete-graph limit: every agent
@@ -239,19 +239,20 @@ interacts with every other.
 Experiments cover $n\in\{100,\,1{,}000,\,10{,}000\}$ with the same
 run counts and convergence criterion as Section~\ref{sec:exp-setup}.
 
-Figures~\ref{fig:heatmap-rel-uniform} and~\ref{fig:heatmap-rel-nonuniform} summarize all four scenarios.
+Figures~\ref{fig:heatmap-rel-uniform} and~\ref{fig:heatmap-rel-nonuniform}
+summarize the four scenarios, one per figure row.
 
-\noindent\textbf{Uniform memoryless (Row~1).}
+\paragraph{Uniform memoryless (Figure~\ref{fig:heatmap-rel-uniform}, top row).}
 $\SOMminus$ and $\CBSOMminus$ (Confirmation) achieve $100\%$ consensus
 at every relative density and every tested scale, including the
 sparsest configuration ($\rho=10\%$, $n=10{,}000$,
 i.e.\ $\approx\!1{,}000$ neighbors per agent).
 Backfire and Authority yield $0\%$ everywhere.
-The all-white and all-black panels confirm that the bias-region
-dichotomy is a property of the bias type alone, independent of
+The all-white and all-black panels indicate that, in this range, the
+bias-region dichotomy depends on the bias type alone and not on the
 connectivity level.
 
-\noindent\textbf{Uniform memory-based (Row~2).}
+\paragraph{Uniform memory-based (Figure~\ref{fig:heatmap-rel-uniform}, bottom row).}
 All cells are black for $n\ge 1{,}000$ across all configurations and
 all relative densities, including the complete-graph limit
 ($\rho=100\%$).
@@ -260,7 +261,7 @@ for Conf\,+\,Backfire (80/20) at $\rho=10\%$ and $25\%$
 respectively, and $0.1\%$ for SOM$^+$\,+\,Confirmation (70/30) at
 $\rho=10\%$; all vanish at $\rho\ge 50\%$.
 
-\noindent\textbf{Non-uniform memoryless (Row~3).}
+\paragraph{Non-uniform memoryless (Figure~\ref{fig:heatmap-rel-nonuniform}, top row).}
 The SOM$^-$\,+\,Conf (70/30) column is entirely white: mixing a $30\%$
 confirmation minority with an unbiased majority preserves $100\%$
 consensus at every scale and every relative density.
@@ -268,15 +269,15 @@ The three disruptive mixtures annotate small non-zero values
 ($1.4$--$3.0\%$) only at $n=100$; for $n\ge 1{,}000$ they are
 identically zero regardless of $\rho$.
 
-\noindent\textbf{Non-uniform memory-based (Row~4).}
+\paragraph{Non-uniform memory-based (Figure~\ref{fig:heatmap-rel-nonuniform}, bottom row).}
 The entire row is black: zero consensus for all configurations,
 all three scales, and all relative densities up to the complete graph.
 
-Together, Rows~2 and~4 sharpen the memory-barrier conclusion of
-Section~\ref{sec:exp-discussion}: the suppression of consensus under
-$\CBSOMplus$ cannot be overcome by increasing connectivity, up to and
-including full connectivity, confirming that the barrier is structural
-rather than a threshold effect.
+Together, the two memory-based scenarios sharpen the memory-barrier
+conclusion of Section~\ref{sec:exp-discussion}. Increasing connectivity,
+up to and including the complete graph, does not overcome the
+suppression of consensus under $\CBSOMplus$. The barrier is therefore
+structural rather than a threshold effect.
 
 \begin{figure}[!htbp]
   \centering
@@ -288,7 +289,7 @@ rather than a threshold effect.
     $n\in\{100,\,1\mathrm{k},\,10\mathrm{k}\}$).
     \textbf{Top row} (memoryless): SOM$^-$ and Confirmation are
     near-white at every cell; Backfire and Authority are uniformly
-    black --- the bias dichotomy is fully density-invariant.
+    black; the bias dichotomy does not depend on density.
     \textbf{Bottom row} (memory-based): all black for $n\ge 1{,}000$
     at every $\rho$, including the complete graph ($\rho=100\%$);
     non-zero values appear only at $n=100$, $\rho\le 25\%$
@@ -320,10 +321,10 @@ rather than a threshold effect.
 Three empirical findings summarize the experimental evidence:
 
 \begin{enumerate}
-  \item \textbf{Sharp bias-region dichotomy.}
+  \item \textbf{Bias-region dichotomy.}
     $R$-region biases (Confirmation) yield $\mathrm{CR}$ approaching
-    $100\%$ at sufficient density for $n\le 10^5$ (run counts
-    $\ge 50$); at $n=10^6$ (10~runs), all Confirmation runs converge
+    $100\%$ at sufficient density for $n\le 10^5$ (at least 50 runs per
+    configuration). At $n=10^6$ (10~runs), all Confirmation runs converge
     at density~$\ge 5$, but the sample is too small to assert
     $\mathrm{CR}=100\%$ unconditionally.
     Non-$R$ biases (Backfire, Authority) yield $\mathrm{CR}=0\%$
@@ -332,15 +333,16 @@ Three empirical findings summarize the experimental evidence:
   \item \textbf{Sub-linear consensus threshold.}
     The critical density grows from $2$ (small networks) to $4$--$5$
     ($n=10^6$), spanning only $3$ units across eight orders of
-    magnitude of network size.  Confirmation consistently reduces the
-    threshold by one unit compared to the unbiased $\SOMminus$ baseline.
+    magnitude of network size. The threshold under Confirmation is
+    consistently one unit lower than under the unbiased $\SOMminus$
+    baseline.
 
   \item \textbf{Memory as a structural barrier.}
     Memory-based dynamics ($\SOMplus$, $\CBSOMplus$) almost entirely
-    suppress consensus: even Confirmation retains non-zero
-    $\mathrm{CR}$ only at $n \le 1{,}000$, and in non-uniform
-    settings an $R$-region majority cannot compensate for
-    memory-induced path dependence beyond $n=100$.
+    suppress consensus. Even Confirmation retains non-zero
+    $\mathrm{CR}$ only at $n \le 1{,}000$. In non-uniform
+    settings, an $R$-region majority cannot compensate for the path
+    dependence induced by memory beyond $n=100$.
 \end{enumerate}
 
 \paragraph{Data and code availability.}

@@ -1,73 +1,62 @@
 \section{Conclusions and Related Work}
 \label{sec:conclusions}
 
-\subsection{Conclusions}
-
 We introduced \CBSOMminus\ and \CBSOMplus, two extensions of the
-Spiral-of-Silence opinion models of~\cite{aranda2024sound}
-that incorporate cognitive bias functions into the belief-update rule.
-We identified the Receptive-Resistant region~$R$ as the structural
-condition under which bias-augmented dynamics preserve the key structural
-properties of the base model: scaled linear $R$-biases guarantee consensus
-on cliques for all $n \geq 2$, while backfire and authority biases
-consistently prevent it in all simulated scenarios.
-To our knowledge, this is the first work to embed cognitive bias functions
-into a Spiral-of-Silence framework and to provide formal consensus
-guarantees for the resulting models.
-The theoretical results are corroborated by large-scale simulations over
-networks ranging from $10$ to $10^6$ agents, confirming the bias-region
-dichotomy observed empirically, a sub-linear growth of the critical density
-threshold with network size, and the structural consensus barrier
-introduced by memory-based dynamics.
+Spiral-of-Silence opinion models of~\cite{aranda2024sound} that
+incorporate cognitive bias functions into the belief-update rule.
+We showed that, in the memoryless model, the Receptive-Resistant
+region~$R$ preserves the structural properties of the base model: global
+silence never lasts more than one round, and the extreme opinions
+contract monotonically. For scaled linear biases, we proved consensus
+on cliques of every size $n\ge 2$. Large-scale simulations, with networks
+from $10$ to $10^6$ agents, complement these results. They show a
+dichotomy between bias regions, a sub-linear growth of the critical
+density with network size, and a consensus barrier introduced by
+memory. To our knowledge, this is the first work that embeds cognitive
+bias functions into a Spiral-of-Silence framework and gives formal
+consensus guarantees for the resulting models.
 
-In future work, we plan to extend the consensus analysis beyond cliques to
-arbitrary strongly-connected graphs.
-We also plan to extend the framework to dynamic network topologies, where
-the influence graph evolves over time, and to confidence-based silence
-formulations, not yet studied under cognitive bias.
-Finally, coupling the simulation framework with empirical social network
-data would allow partial model validation and the tuning of bias parameters
-to improve the predictive power of the models for real-world opinion
-polarization phenomena.
+The work closest to ours is that of Alvim et al.~\cite{Alvim2024}. It
+introduces the taxonomy of bias regions used throughout this paper
+(receptive-resistant, malleable, backfire, and insular), and proves that
+continuous $R$-region biases guarantee consensus in the synchronous
+DeGroot model on strongly connected graphs. Our
+Theorem~\ref{thm:cbsom-consensus-n3} lifts this guarantee to the
+Spiral-of-Silence setting, where the silence mechanism decouples from
+the bias layer. Unlike~\cite{Alvim2024}, our consensus result is
+restricted to cliques and to the scaled linear family $\mathcal{F}_\alpha$.
+The psychological foundations
+of the confirmation, backfire, and authority biases considered here are
+discussed in~\cite{Aronson2010}.
 
-\subsection{Related Work}
+The models \SOMminus\ and \SOMplus\ were introduced
+in~\cite{aranda2024sound}. That work establishes consensus in $n$-agent
+cliques for $n\ge 3$ and exhibits the period-2 oscillation on two-agent
+cliques. Our Theorem~\ref{thm:cbsom-consensus-n2} shows that every
+scaled linear bias $f_\alpha$ with $\alpha\in(0,1)$ breaks this
+oscillation and restores consensus. In our simulations, the memory-based
+model \CBSOMplus\ reaches consensus far less often than \CBSOMminus\ at
+every scale. This mirrors the behavior observed for \SOMplus\
+in~\cite{aranda2024sound}, and suggests that memory acts as a barrier
+to consensus independently of the bias layer. The decoupling identified
+in Section~\ref{sec:analysis-structure} explains why the guarantees
+of~\cite{aranda2024sound} carry over to \CBSOMminus: the silence
+criterion depends only on raw opinion proximity, so the bias layer does
+not interfere with the conditions that produce consensus in the base
+model. A comparable argument for \CBSOMplus\ remains open, because
+memory couples historical opinion values with the current silence
+decision.
 
-Alvim et al.~\cite{Alvim2024} introduce the bias region taxonomy---receptive-resistant,
-malleable, backfire, and insular---used throughout this paper, and prove
-that continuous $R$-region bias functions guarantee consensus in synchronous
-DeGroot dynamics on strongly connected graphs.
-Our work builds directly on this framework: Theorem~\ref{thm:cbsom-consensus-n3}
-lifts the $R$-bias consensus guarantee from the synchronous DeGroot setting to the
-Spiral-of-Silence setting, where the silence mechanism introduces a
-structural decoupling between bias and silence decisions.
-A key difference is that our consensus result is restricted to cliques under
-the scaled linear subfamily $\mathcal{F}_\alpha$, whereas
-Alvim et al.'s result holds for all continuous $R$-biases on
-arbitrary strongly connected graphs; extending our result to that full
-generality is an open problem.
-Psychological foundations for the bias functions considered
-here---confirmation, backfire, and authority---are discussed
-in~\cite{Aronson2010}.
+Bounded-confidence models~\cite{Deffuant2000} let agents interact only
+with those whose opinions lie within a confidence threshold. The
+tolerance radius $\tau_i$ of our models plays a similar role, but it
+governs whether an agent speaks, not whom it listens to. Agent-based
+simulations have also been used to study the Spiral of Silence in
+online settings~\cite{Sohn2022,Wang2013,Ross2019,Cabrera2021}. Our
+experimental study follows this line, and complements it with formal
+results for the clique case.
 
-The Spiral-of-Silence models \SOMminus\ and \SOMplus\ were introduced
-in~\cite{aranda2024sound}, which also studies their formal convergence
-properties, establishing consensus in $n$-agent cliques for $n\ge 3$ and
-the period-2 oscillation pathology on two-agent cliques.
-Our Theorem~\ref{thm:cbsom-consensus-n2} resolves this pathology: any
-scaled-linear bias $f_\alpha$ with $\alpha\in(0,1)$ breaks the oscillation
-and restores consensus.
-The memory-based model \CBSOMplus\ exhibits substantially lower consensus
-rates than \CBSOMminus\ across all scales; this mirrors the behavior already
-observed for \SOMplus\ in~\cite{aranda2024sound} and confirms that memory
-acts as a structural barrier independent of the bias layer.
-
-The structural decoupling identified in
-Section~\ref{sec:analysis-structure}---the silence criterion of \CBSOMminus\
-depends only on raw opinion proximity and not on bias-filtered values---means
-that the consensus guarantees of~\cite{aranda2024sound} for \SOMminus\
-extend naturally to \CBSOMminus\ with $R$-region biases: wherever the
-silence dynamics create conditions for consensus in the base model, the bias
-layer does not interfere with those conditions.
-A comparable argument for \CBSOMplus\ remains open, as the memory layer
-couples historical opinion values with the current silence decision in a
-non-trivial way.
+In future work, we plan to extend cognitive biases to the confidence-based
+silence models of Gaona~\cite{gaona2024opinion}, which have not yet been
+studied under cognitive bias. We also plan to study dynamic network
+topologies, in which the influence graph evolves over time.

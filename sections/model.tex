@@ -28,10 +28,18 @@ repeated weighted averaging over a fixed \emph{influence graph}.
   \emph{influencers} of~$i$.
 \end{definition}
 
+The vertices in $A$ represent the $n$ agents of a community. An edge
+$(j,i)\in E$ means that agent $j$ influences agent $i$, and the weight
+$I(j,i)$ denotes the strength of that influence: the higher the value,
+the stronger the influence. Equation~\eqref{eq:row-stochastic} requires
+that the weights that agent $i$ gives to its influencers and to itself
+add up to~$1$.
+
 Each agent $i$ holds an \emph{opinion} $B_i^t\in[0,1]$ at time $t$,
 interpreted as the degree of agreement with an underlying proposition
-(e.g., \emph{``AI poses a threat to humanity''}).
-The full opinion vector is $\mathbf{B}^t\in[0,1]^n$.
+(e.g., \emph{``AI poses a threat to humanity''}). If $B_i^t=0$, agent $i$
+completely disagrees with the proposition; if $B_i^t=1$, it completely
+agrees with it. The full opinion vector is $\mathbf{B}^t\in[0,1]^n$.
 The synchronous DeGroot update reads:
 \begin{equation}\label{eq:degroot}
   B_i^{t+1} = \sum_{j=1}^n I_{ij}\,B_j^t,
@@ -70,6 +78,9 @@ each of its influencers before the update is applied.
   that transforms the raw disagreement $x=B_j^t-B_i^t$.
 \end{definition}
 
+Intuitively, $\beta_{i,j}(x)$ is the part of the disagreement $x$ that
+agent $i$ actually absorbs from agent $j$. The identity function
+$\beta_{i,j}(x)=x$ corresponds to the linear response of the DeGroot model.
 The bias-extended DeGroot update replaces the linear term
 $(B_j-B_i)$ with $\beta_{i,j}(B_j-B_i)$:
 \begin{equation}\label{eq:degroot-bias}
@@ -77,10 +88,11 @@ $(B_j-B_i)$ with $\beta_{i,j}(B_j-B_i)$:
   = B_i^t + \sum_{j\in N(i)} I_{ji}\,
     \beta_{i,j}(B_j^t-B_i^t).
 \end{equation}
-The original formulation of~\cite{Alvim2024} includes an explicit $[\,\cdot\,]_0^1$
-clamp to enforce $B_i^{t+1}\in[0,1]$.  Throughout this paper all bias functions lie
-in the Receptive-Resistant region $R$; in that regime the update stays within $[0,1]$
-without clamping (see Lemma~\ref{lem:cbsom-bounds}), so we omit it from here on.
+The original formulation of~\cite{Alvim2024} includes an explicit
+$[\,\cdot\,]_0^1$ clamp to enforce $B_i^{t+1}\in[0,1]$. Our formal results
+assume bias functions in the Receptive-Resistant region $R$ defined below.
+In that region the update stays within $[0,1]$ without clamping
+(Lemma~\ref{lem:cbsom-bounds}), so we omit the clamp from here on.
 The four representative bias functions examined in this paper are:
 \begin{itemize}
   \item \textbf{Confirmation bias} (\textsl{conf}): agents attenuate
@@ -100,7 +112,7 @@ The four representative bias functions examined in this paper are:
 
 \noindent\textbf{Bias regions.}
 Alvim et al.~\cite{Alvim2024} classify bias functions by the
-region of $S=[-1,1]^2$ in which the graph of $(x,\beta(x))$ lies:
+region of the square $[-1,1]^2$ in which the graph of $(x,\beta(x))$ lies:
 \begin{itemize}
   \item \emph{Receptive-Resistant} ($R$): $0<|\beta(x)|<|x|$;
     confirmation bias belongs to this region. In synchronous DeGroot
@@ -113,9 +125,10 @@ region of $S=[-1,1]^2$ in which the graph of $(x,\beta(x))$ lies:
     consensus typically fails.
   \item \emph{Insular} ($I$): zero response, $\beta(x)=0$.
 \end{itemize}
-The $R$-region is central to this paper: its continuity condition
-provides the key analytical lever for extending consensus guarantees
-to the models introduced below.
+The region $R$ is central to this paper. A bias in $R$ moves an agent
+towards each influencer, but never beyond it. Together with continuity,
+this property is the key analytical lever for extending consensus
+guarantees to the models introduced below.
 
 % ===================================================================
 \subsection{Spiral-of-Silence Opinion Models}
@@ -163,7 +176,9 @@ $|x-y|\le\tau_i$ for tolerance radius $\tau_i\in[0,1]$:
 \end{align}
 where $N^t(i)=\{j\in N(i):S_j^t=1\}$.
 Intuitively, agent $i$ goes silent when a majority of its currently
-vocal neighbors hold opinions too far from its own.
+vocal neighbors hold opinions too far from its own. Silent agents still
+revise their own opinions through~\eqref{eq:som-minus-b}; they only stop
+expressing them.
 
 \subsubsection{Memory-Based Model \texorpdfstring{\SOMplus}{SOM+}}
 \label{sec:som-plus}
@@ -185,8 +200,8 @@ $\hat{B}_j^t=B_j^{t_j'}$ (\emph{last public opinion} of agent~$j$):
   \end{cases}
   \label{eq:som-plus-s}
 \end{align}
-Unlike \SOMminus, \SOMplus\ is non-Markovian: evolution depends on
-the history of silence events through $\hat{B}_j^t$.
+Unlike \SOMminus, the model \SOMplus\ is non-Markovian: its evolution
+depends on the history of silence events through $\hat{B}_j^t$.
 
 \subsubsection{Key Results for \texorpdfstring{\SOMminus}{SOM-}}
 \label{sec:som-results}
@@ -196,14 +211,14 @@ underpin the analysis in Section~\ref{sec:analysis}.
 
 \begin{lemma}[Bounded opinions~\cite{aranda2024sound}]
 \label{lem:bounds}
-  For any \SOMminus\ model and all $t$:
+  For every \SOMminus\ model and all $t$:
   $\min(\mathbf{B}^t)\le B_i^{t+1}\le\max(\mathbf{B}^t)$
   for all $i\in A$.
 \end{lemma}
 
 \begin{corollary}[Monotone extremes~\cite{aranda2024sound}]
 \label{cor:mono}
-  In any \SOMminus\ model, $\max(\mathbf{B}^t)$ is non-increasing
+  In every \SOMminus\ model, $\max(\mathbf{B}^t)$ is non-increasing
   and $\min(\mathbf{B}^t)$ is non-decreasing in~$t$.
 \end{corollary}
 
@@ -244,8 +259,36 @@ by replacing the linear disagreement term $(B_j^t-B_i^t)$ with the
 biased term $\beta_{i,j}(B_j^t-B_i^t)$. The silence factor $S_j^t$
 continues to zero out silent agents' contributions entirely; thus,
 \emph{bias determines how vocal neighbors are processed, while
-silence determines which neighbors are visible}---the two mechanisms
-remain structurally decoupled.
+silence determines which neighbors are visible}. The two mechanisms
+remain structurally decoupled. The following example illustrates both.
+
+\begin{example}\label{ex:cbsom-minus}
+  Consider a clique of three agents in which each agent gives weight
+  $1/2$ to each of the other two; that is, $I_{ji}=1/2$ for $j\ne i$ and
+  $I_{ii}=0$. Let $\mathbf{B}^0=(1,0.5,0)$, $\mathbf{S}^0=(1,1,1)$, and
+  $\tau_i=0.4$ for every agent, and let every edge carry the bias
+  $\beta_{i,j}(x)=x/2$, which halves each disagreement.
+  By~\eqref{eq:cbsom-minus-b}, agent~1 updates its opinion to
+  \[
+    B_1^1 = 1+\tfrac{1}{2}\cdot\tfrac{1}{2}(0.5-1)
+             +\tfrac{1}{2}\cdot\tfrac{1}{2}(0-1) = 0.625,
+  \]
+  and similarly $\mathbf{B}^1=(0.625,0.5,0.375)$. Without bias
+  ($\beta_{i,j}(x)=x$) we would obtain $(0.25,0.5,0.75)$ instead: agents~1
+  and~3 would swap sides, whereas the biased agents move only part of the
+  way towards each other.
+
+  Now consider silence. At $t=0$, every agent disagrees with both of its
+  neighbors by more than $\tau_i=0.4$, so by~\eqref{eq:cbsom-minus-s} all
+  agents fall silent: $\mathbf{S}^1=(0,0,0)$. With no vocal agent, no
+  opinion changes, and $\mathbf{B}^2=\mathbf{B}^1$. At $t=1$ no agent hears
+  any disagreement, so all agents speak again: $\mathbf{S}^2=(1,1,1)$. From
+  then on all pairwise distances are at most $0.25<\tau_i$, so the agents
+  remain vocal and approach the consensus value $0.5$. This episode of
+  global silence is not a coincidence: Lemma~\ref{lem:no-perpetual-silence}
+  in Section~\ref{sec:analysis} shows that global silence never lasts more
+  than one round.
+\end{example}
 
 \begin{remark}[DeGroot as a special case]\label{rem:degroot-cbsom-minus}
   Setting $\tau_i=1$, $\mathbf{S}^0=\mathbf{1}_n$, and
@@ -280,12 +323,13 @@ remain structurally decoupled.
   $t_j'=\max\{u\le t:S_j^u=1\}$.
 \end{definition}
 
-\CBSOMplus\ applies the bias function to historical public opinions:
-$\beta_{i,j}$ filters how agent $i$ assimilates the last expressed
-belief of neighbor~$j$, regardless of whether $j$ is currently vocal.
-This creates a temporal-cognitive coupling absent in \CBSOMminus:
-a silent agent's frozen opinion is processed through $i$'s cognitive
-lens at every subsequent step until that agent speaks again.
+The model \CBSOMplus\ applies the bias function to historical public
+opinions: $\beta_{i,j}$ filters how agent $i$ assimilates the last
+expressed belief of neighbor~$j$, regardless of whether $j$ is currently
+vocal. This creates a coupling between time and cognition that is absent
+in \CBSOMminus. The frozen opinion of a silent agent is processed through
+the bias of each of its neighbors at every step, until that agent speaks
+again.
 
 \begin{remark}[DeGroot as a special case]\label{rem:degroot-cbsom-plus}
   Setting $\tau_i=1$ and $\beta_{i,j}(x)=x$ recovers DeGroot from
@@ -298,11 +342,11 @@ lens at every subsequent step until that agent speaks again.
 \label{sec:model-relations}
 
 Table~\ref{tab:models} summarizes the model hierarchy.
-DeGroot is a special case of both \CBSOMminus\ and \CBSOMplus\
-(Remarks~\ref{rem:degroot-cbsom-minus}--\ref{rem:degroot-cbsom-plus});
-the \SOM\ models are special cases of the \CBSOM\ models obtained
-by setting $\beta_{i,j}(x)=x$. Any result proved for \CBSOM\ with
-identity biases therefore recovers the corresponding \SOM\ result.
+The DeGroot model is a special case of both \CBSOMminus\ and \CBSOMplus\
+(Remarks~\ref{rem:degroot-cbsom-minus}--\ref{rem:degroot-cbsom-plus}).
+The \SOM\ models are the special cases of the \CBSOM\ models obtained
+by setting $\beta_{i,j}(x)=x$. Therefore, every result proved for \CBSOM\
+with identity biases recovers the corresponding \SOM\ result.
 
 \begin{table}[!htbp]
 \centering

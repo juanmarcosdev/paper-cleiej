@@ -5,24 +5,24 @@
   where $I_{\min}=\min_{(j,i)\in E}I_{ji}$ and
   $\alpha_{\min}=\min_{(j,i)\in E}\alpha_{i,j}$.
   Both are strictly positive by assumption.
-  Let $R_t=\max(\mathbf{B}^t)-\min(\mathbf{B}^t)$.
-  By Corollary~\ref{cor:cbsom-mono}, $\{R_t\}$ is non-increasing.
+  Let $\Delta_t=\max(\mathbf{B}^t)-\min(\mathbf{B}^t)$.
+  By Corollary~\ref{cor:cbsom-mono}, $\{\Delta_t\}$ is non-increasing.
 
   We identify two disjoint types of steps and show that the second
-  type occurs infinitely often, each time contracting $R_t$ by a
+  type occurs infinitely often, each time contracting $\Delta_t$ by a
   factor of at least $(1-c)$.
 
   \medskip
   \begin{pclaim}[Max-agent update on a clique with $\mathcal{F}_\alpha$-bias]
   \label{claim:max-drop}
     Let $G$ be a clique, $\beta_{i,j}=f_{\alpha_{i,j}}$, and
-    $R_t>0$.  If agent $i$ achieves $\max(\mathbf{B}^t)$ and
+    $\Delta_t>0$.  If agent $i$ achieves $\max(\mathbf{B}^t)$ and
     there exists a vocal neighbor $j\in N^t(i)$ with
     $B_j^t < B_i^t$, then:
     \begin{equation}\label{eq:app-max-drop}
       \max(\mathbf{B}^{t+1})
       \;\le\;
-      \max(\mathbf{B}^t) - c\cdot R_t.
+      \max(\mathbf{B}^t) - c\cdot \Delta_t.
     \end{equation}
   \end{pclaim}
 
@@ -43,20 +43,20 @@
     &\le B_i^t - I_{\min}\cdot\alpha_{\min}\cdot(B_i^t-B_j^t).
   \end{align*}
   Since $j$ can be taken as the min-agent and
-  $B_i^t-B_j^t\ge R_t$:
-  $B_i^{t+1}\le \max(\mathbf{B}^t)-c\cdot R_t$.
+  $B_i^t-B_j^t\ge \Delta_t$:
+  $B_i^{t+1}\le \max(\mathbf{B}^t)-c\cdot \Delta_t$.
   Together with $\max(\mathbf{B}^{t+1})\le B_i^{t+1}$
   (from Lemma~\ref{lem:cbsom-bounds}), Eq.~\eqref{eq:app-max-drop}
   follows. \hfill$\square$
 
   \medskip\noindent\textbf{Infinitely many contraction steps.}
 
-  We call step $t$ \emph{productive} if $R_t>0$ and there exists a
+  We call step $t$ \emph{productive} if $\Delta_t>0$ and there exists a
   vocal neighbor of the max-agent with strictly lower opinion.
   We show productive steps occur infinitely often.
 
   Suppose for contradiction that after some time $T$, no step is
-  productive.  Then for all $t\ge T$ with $R_t>0$, every vocal
+  productive.  Then for all $t\ge T$ with $\Delta_t>0$, every vocal
   agent at time $t$ holds opinion $\max(\mathbf{B}^t)$.
   In this situation the min-agent $j$ (with $B_j^t<\max(\mathbf{B}^t)$)
   is silent at every $t\ge T$.
@@ -84,7 +84,7 @@
   forcing $v\ge U$, i.e., $B_j^t\to U$.
   But $B_j^t$ is a (non-decreasing) sequence bounded above by $1$,
   and $B_j^t\to U$ means $\min(\mathbf{B}^t)\to U=\max(\mathbf{B}^t)$:
-  $R_t\to 0$, contradicting $R_t>0$ for all $t\ge T$.
+  $\Delta_t\to 0$, contradicting $\Delta_t>0$ for all $t\ge T$.
 
   Therefore productive steps occur infinitely often.
 
@@ -93,12 +93,12 @@
   Let $\{t_k\}_{k\ge 0}$ be the (infinite) subsequence of productive
   steps.  By Claim~\ref{claim:max-drop} and
   Corollary~\ref{cor:cbsom-mono} (monotonicity of min):
-  \[R_{t_k+1}\le R_{t_k}-c\cdot R_{t_k}=(1-c)\,R_{t_k}.\]
-  Since $R_t$ is non-increasing between productive steps:
-  \[R_{t_{k+1}}\le R_{t_k+1}\le(1-c)\,R_{t_k}.\]
+  \[\Delta_{t_k+1}\le \Delta_{t_k}-c\cdot \Delta_{t_k}=(1-c)\,\Delta_{t_k}.\]
+  Since $\Delta_t$ is non-increasing between productive steps:
+  \[\Delta_{t_{k+1}}\le \Delta_{t_k+1}\le(1-c)\,\Delta_{t_k}.\]
   By induction:
-  \[R_{t_k}\le(1-c)^k\,R_0.\]
-  For any $\varepsilon>0$, choose $k$ large enough so that
-  $(1-c)^k R_0<\varepsilon$.
-  Then $R_{t_k}<\varepsilon$.
+  \[\Delta_{t_k}\le(1-c)^k\,\Delta_0.\]
+  For every $\varepsilon>0$, choose $k$ large enough so that
+  $(1-c)^k \Delta_0<\varepsilon$.
+  Then $\Delta_{t_k}<\varepsilon$.
 \end{proof}

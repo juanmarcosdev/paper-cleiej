@@ -1,0 +1,190 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+\setlist{noitemsep,topsep=2pt}
+
+\newcommand{\CBm}{$\mathrm{CBSOM}^{-}$}
+\newcommand{\CBp}{$\mathrm{CBSOM}^{+}$}
+\newcommand{\SOMm}{$\mathrm{SOM}^{-}$}
+\newcommand{\pag}[1]{\textit{(pág.~#1)}}
+
+
+\begin{document}
+
+La nueva versión del paper sigue la estructura del artículo de Fairness
+(\textit{Fairness and Consensus in an Asynchronous Opinion Model for Social
+Networks}). Las páginas corresponden al PDF nuevo, que tiene 21; el anterior
+tenía 20.
+
+\section*{Abstract \pag{1}}
+
+El abstract sigue el mismo orden del de Fairness: qué modelo presentamos, cómo
+funciona un paso, qué probamos y qué muestran las simulaciones. Cuenta en
+palabras lo que hace cada agente: pasa su desacuerdo con cada influenciador por
+la función de sesgo, actualiza su opinión y después decide si habla o se queda
+callado. También deja claro que en \CBm{} los callados no influyen a nadie,
+mientras que en \CBp{} siguen influyendo con la última opinión que dijeron en
+público.
+
+Salieron los detalles de implementación del simulador y la frase final sobre
+estrategias contra la polarización. Para backfire y authority, el abstract dice
+ahora que impiden el acuerdo ``almost always'' en vez de ``robustly'', porque
+authority tiene eventos sueltos con $n=10$. Quedó en 197 palabras; CLEI pide
+máximo 200.
+
+\section*{Introducción \pag{1--2}}
+
+El primer párrafo arranca como el de Fairness, con el peso de las redes
+sociales en la formación de opiniones, y trae oraciones más cortas. En el de
+DeGroot, ``repetitively'' pasó a ``repeatedly'', y la frase sobre consenso quedó
+como en Fairness: el consenso es un problema central del aprendizaje social, y
+no alcanzarlo indica una comunidad polarizada. Los párrafos de sesgos y de
+Alvim et al.\ ahora son uno solo, sin la frase en negrita sobre la ``central
+contribution''.
+
+Entran tres párrafos nuevos. ``In this paper, we combine\ldots'' explica el
+modelo sin fórmulas. El estado guarda la opinión de cada agente y si está
+hablando o callado; en cada paso el agente filtra cada desacuerdo con su sesgo,
+revisa su opinión y decide si habla en la siguiente ronda según su radio de
+tolerancia. Ese párrafo aclara además que los callados siguen actualizando su
+opinión, solo que no la expresan. El segundo cuenta los resultados en orden:
+propiedades estructurales bajo sesgos en $R$, consenso en cliques para
+$f_\alpha$ (con $n=2$ incluido) y lo que exploran las simulaciones por fuera de
+la teoría. El tercero adelanta el ``To the best of our knowledge'', que antes
+aparecía solo en las conclusiones.
+
+En las contribuciones, el ítem de simulaciones hablaba de una interacción entre
+tamaño, topología y sesgo ``in nuanced ways''. Ahora nombra los hallazgos de la
+Discusión: el umbral de densidad crece de forma sub-lineal con el tamaño de la
+red y la memoria casi acaba con el consenso en redes grandes. Organization
+cierra con dos datos nuevos: varias pruebas aparecen esbozadas en el texto y
+completas en el Apéndice~A, y el simulador tiene su link a GitHub.
+
+\section*{Modelos \pag{2--6}}
+
+Cada definición trae ahora un par de líneas que dicen qué significa. Después de
+la Definición~1 aparece qué son los vértices, qué quiere decir una arista
+$(j,i)$, qué mide el peso y qué exige la Ecuación~(1). En la parte de opiniones
+está lo que significan $B_i^t=0$ y $B_i^t=1$. Tras la Definición~2,
+$\beta_{i,j}(x)$ queda explicada como la parte del desacuerdo que el agente
+absorbe de su influenciador. La presentación de la región $R$ dice por qué
+importa: un sesgo en $R$ acerca al agente a su influenciador sin pasarse.
+
+La frase ``Throughout this paper all bias functions lie in $R$'' chocaba con los
+experimentos, que usan backfire y authority. Quedó como ``Our formal results
+assume bias functions in $R$''. En \SOMm{} hay una línea nueva: los agentes
+callados siguen actualizando su opinión.
+
+El cambio más visible es el Example~1 \pag{5}, justo después de la definición
+de \CBm. Es un clique de 3 agentes con pesos $1/2$,
+$\mathbf{B}^0=(1,0.5,0)$, $\tau_i=0.4$ y el sesgo $\beta(x)=x/2$. Las
+ecuaciones del modelo dan $\mathbf{B}^1=(0.625,0.5,0.375)$; sin sesgo, los
+agentes 1 y 3 se cruzan y terminan en $(0.25,0.5,0.75)$. Después todos se
+callan, las opiniones se quedan quietas una ronda, todos vuelven a hablar y
+convergen a $0.5$. Con eso el lector ve en un caso concreto lo que prueba el
+Lema~5: el silencio global dura máximo una ronda. Las cuentas están verificadas
+con un script, y \texttt{main.tex} tiene un \verb|\newtheorem{example}| para el
+ejemplo.
+
+Las oraciones que empezaban con el nombre del modelo arrancan ahora con ``The
+model\ldots'', y ``For any'' pasó a ``For every''.
+
+\section*{Análisis \pag{6--10}}
+
+La sección abre con los dos teoremas principales y la ruta de la prueba en tres
+pasos, como en el de Fairness. Primero, silencio y sesgo no se estorban y los
+extremos convergen a $U$ y $L$. Luego, $f_\alpha$ contrae la dispersión en
+cliques. Al final, una contradicción da $U=L$. El caso $n=2$ va aparte. Entre
+el Corolario~6 y el Lema~7 hay una frase con la intuición de ambos.
+
+La notación cambió en dos puntos. La dispersión se llama ahora $\Delta_t$: $R$
+ya nombraba la región receptive-resistant, y una frase como ``since
+$\beta\in R$ \ldots\ $R_t<\varepsilon$'' se leía rara. El cambio llega también
+al apéndice. El cuadrado $[-1,1]^2$ dejó de llamarse $S$, letra que ya usa el
+vector de silencio.
+
+El enunciado del Lema~11 definía $\alpha_{\min}$ e $I_{\min}$ sin usarlos;
+ahora esas definiciones aparecen en el esbozo de la prueba, donde sí hacen
+falta. La leyenda de la Figura~3 compara consenso con consenso: ``consensus is
+reached faster than under $\mathrm{conf}(x)$''. En el caso diádico, ``\SOMm{}
+fails to converge'' quedó como ``can fail to converge'', porque la oscilación
+depende de los parámetros.
+
+El Remark~3.3 decía que un $\alpha$ grande oscila y uno pequeño no. Ahora da la
+condición exacta: con $2\alpha I>1$, $\gamma<0$ y la dinámica oscila mientras
+converge; con $2\alpha I<1$, la convergencia es monótona. Eso cuadra con las
+Figuras~5 y~6 y con el caso $\alpha=0.5$. Además desapareció ``Case~2 of
+Theorem~14'' del texto y de la leyenda de la Figura~5: ese teorema no tiene
+casos.
+
+\section*{Experimentos \pag{10--16}}
+
+La introducción de la sección presenta las simulaciones como el estudio de lo
+que la teoría no alcanza a cubrir: grafos libres de escala, sesgos fuera de
+$R$, mezclas y memoria. La versión anterior decía que ``corroboraban'' los
+teoremas.
+
+El resto es sobre todo redacción. Las oraciones largas quedaron partidas, en
+especial la del umbral sub-lineal, que pasaba de 50 palabras. El párrafo sobre
+por qué escogimos esas proporciones ahora son tres: por qué son heurísticas,
+qué pregunta responde cada configuración y qué queda para trabajo futuro. Los
+encabezados de párrafo tienen todos el mismo formato.
+
+La configuración~(i) \pag{13} tiene un ajuste de contenido. El texto la
+describía como ``an $R$-region majority'' con ``a 70\% $R$-region fraction'',
+pero la lista de la misma sección la define como 70\% sin sesgo y 30\% de
+confirmación. Ahora dice que mezclar aristas con confirmación y sin sesgo en
+proporción 30/70 conserva el consenso.
+
+El tono bajó en varios puntos. Salieron ``Remarkably, a mere\ldots'',
+``consensus killers'' y ``sharp''. La frase sobre la ``structural
+impossibility'' que causaba la memoria dice ahora que a gran escala no
+observamos consenso, que es lo que alcanza a mostrar una simulación. En la
+Discusión, ``Confirmation reduces the threshold by one unit compared to
+\SOMm'' quedó como ``the threshold under Confirmation is one unit lower than
+under \SOMm''.
+
+En densidad relativa, los párrafos se llamaban ``Row~1'' a ``Row~4'', aunque
+cada figura tiene dos filas. Ahora cada uno dice a qué figura y fila se
+refiere, por ejemplo ``Figure~11, top row''.
+
+\section*{Conclusiones \pag{16--17}}
+
+Las dos subsecciones se volvieron una sola sección, con el orden del de
+Fairness: resumen, trabajo relacionado y trabajo futuro. El resumen aclara que
+las propiedades estructurales están probadas para el modelo sin memoria.
+
+El párrafo de Alvim et al.\ arranca con ``The work closest to ours'' y dice en
+qué nos diferenciamos: nuestro resultado cubre solo cliques y $f_\alpha$. Salió la frase que
+planteaba como problema abierto extender ese resultado a grafos arbitrarios. En el
+de Aranda et al., ``confirms that memory acts as a structural barrier'' pasó a
+``suggests'', porque esa evidencia sale de simulaciones.
+
+Hay un párrafo nuevo que compara el radio de tolerancia con los modelos de
+confianza acotada de Deffuant et al. Allá el umbral decide a quién escucha el
+agente; acá decide si habla. El mismo párrafo ubica el trabajo frente a las
+simulaciones de espiral del silencio que ya citábamos (Sohn, Wang, Ross,
+Cabrera). Deffuant estaba en el \texttt{.bib} sin citar y ahora aparece en las
+referencias.
+
+El trabajo futuro quedó en dos puntos: llevar los sesgos cognitivos a los
+modelos de silencio basados en confianza de Gaona, que ahora se cita con su
+tesis de maestría, y estudiar topologías de red dinámicas. Salieron la
+extensión a grafos arbitrarios y la validación con datos empíricos.
+
+\section*{Apéndice \pag{18--21}}
+
+El apéndice usa $\Delta_t$ en lugar de $R_t$. También cambió ``analyse'' por
+``analyze'', para mantener ortografía estadounidense en todo el paper, y ``Fix
+any agent'' por ``Fix an agent''.
+
+\end{document}
