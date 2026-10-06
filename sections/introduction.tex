@@ -1,8 +1,9 @@
 \section{Introduction}
 \label{sec:intro}
 
-Social networks have a strong impact on \emph{opinion formation}, often
-resulting in polarization. Individuals express their views, are exposed to
+People seldom form their opinions on contested issues in isolation. In
+social networks, \emph{opinion formation} is a collective process that
+unfolds over many interactions. Individuals express their views, are exposed to
 the views of others, and may revise their own beliefs in response. Whether
 this feedback loop ends in broad consensus or in entrenched polarization
 depends on the structure of the network and on the behavioral rules that
@@ -44,8 +45,7 @@ opinion landscape in digitally mediated
 networks~\cite{Sohn2022,Wang2013,Ross2019,Cabrera2021}. Aranda et
 al.~\cite{aranda2024sound} recently gave a formal treatment of this mechanism:
 they extended the DeGroot model with silence and derived conditions under
-which consensus forms or fails. That work is the direct predecessor of the
-present paper.
+which consensus forms or fails.
 
 Cognitive biases add a further source of nonlinearity. Individuals do not
 respond neutrally to information that conflicts with their beliefs.
@@ -136,7 +136,12 @@ of~\cite{aranda2024sound}, and then defines \CBSOMminus\ and \CBSOMplus.
 Section~\ref{sec:analysis} presents the formal analysis.
 Section~\ref{sec:experiments} reports the simulation study.
 Section~\ref{sec:conclusions} discusses related work and concludes.
-For the sake of readability, some proofs are only outlined in the main text;
+
+This article extends the ICTAC 2025 paper~\cite{aranda2024sound}, which
+introduced the models \SOMminus\ and \SOMplus\ and studied their consensus
+properties. The present article adds cognitive bias functions to both
+models; the new contributions are those summarized above in
+items~1--4. For the sake of readability, some proofs are only outlined in the main text;
 the complete proofs are given in Appendix~\ref{app:proofs}. The simulator that
 supports our experiments is publicly available at
 \url{https://github.com/juanmarcosdev/belief_evolution_simulator}.

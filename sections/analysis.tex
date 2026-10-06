@@ -54,6 +54,13 @@ silence decision.
   The argument does not use the bias functions $\beta_{i,j}$.
 \end{proof}
 
+Lemma~\ref{lem:no-perpetual-silence} says that total silence corrects
+itself. When every agent is silent, no agent hears
+any disagreement, because there is nothing to hear. The majority
+condition in~\eqref{eq:cbsom-minus-s} then holds trivially, and every
+agent speaks again in the next round. Since the argument involves only
+the silence rule, it holds for every choice of bias functions.
+
 \begin{corollary}[No perpetual global silence in \CBSOMminus]
 \label{cor:no-perpetual-silence}
   In every \CBSOMminus\ model, for every $t\in\mathbb{N}$ there exists
@@ -82,12 +89,26 @@ current extreme opinions.
   convexity argument. The full proof is in Appendix~\ref{app:proofs}.
 \end{proof}
 
+In terms of the model, Lemma~\ref{lem:cbsom-bounds} says that a
+receptive-resistant bias can slow an agent down, but it never pushes the
+agent past the opinions that it hears. Hence, as in \SOMminus, no agent
+can become more extreme than the most extreme agent of the previous
+round. This is the first place where the restriction to $R$ matters. An
+authority bias can make an agent overshoot its influencer, and a backfire
+bias can push it away from all of its influencers; neither of them
+satisfies the lemma.
+
 \begin{corollary}[Monotone extremes in \CBSOMminus]
 \label{cor:cbsom-mono}
   In every \CBSOMminus\ model with continuous $R$-biases,
   $\max(\mathbf{B}^t)$ is non-increasing and
   $\min(\mathbf{B}^t)$ is non-decreasing in $t$.
 \end{corollary}
+
+Corollary~\ref{cor:cbsom-mono} carries Corollary~\ref{cor:mono} over to
+\CBSOMminus: under receptive-resistant biases, the range of opinions in
+the community can only shrink. This holds whatever the bias functions in
+$R$ and whatever the pattern of silence.
 
 \begin{theorem}[Limits of extremes in \CBSOMminus]
 \label{thm:cbsom-limits}
@@ -104,6 +125,13 @@ current extreme opinions.
   Both limits exist by the Monotone Convergence
   Theorem~\cite{Houshang2014}.
 \end{proof}
+
+Theorem~\ref{thm:cbsom-limits} tells us that the extreme opinions
+eventually settle, at an upper value $U$ and a lower value $L$. If $U=L$,
+every opinion is squeezed between two extremes that converge to the same
+value, and the agents reach consensus. If $U>L$, the gap between the
+highest and the lowest opinion never closes, and consensus fails. Proving
+$U=L$ is therefore the goal of the rest of this section.
 
 % ===================================================================
 \FloatBarrier
@@ -151,7 +179,11 @@ function of~\cite{Alvim2024} on the square $[-1,1]^2$.
   For $x=0$: $f_\alpha(0)=0$, so $(0,0)\in R$.
 \end{proof}
 
-By Lemma~\ref{lem:in-R}, all results of
+Concretely, an agent with bias $f_\alpha$ absorbs the same
+fraction $\alpha$ of every disagreement, whatever its size. It is always
+pulled towards each vocal influencer, but it moves only a fraction
+$\alpha$ of the distance that a DeGroot agent would move. By
+Lemma~\ref{lem:in-R}, all results of
 Section~\ref{sec:analysis-structure} apply uniformly to
 $\mathcal{F}_\alpha$. Moreover, on cliques, $\mathcal{F}_\alpha$-biases
 induce a \emph{contraction} of the opinion spread
@@ -179,6 +211,14 @@ $\Delta_t=\max(\mathbf{B}^t)-\min(\mathbf{B}^t)$.
   forces $\Delta_t\to 0$.
 \end{proof}
 
+Lemma~\ref{lem:contraction} is the key step towards consensus.
+Informally, on a clique every vocal agent is heard by every other agent.
+Each time a less extreme opinion is expressed, it pulls the extreme
+agents towards it, and the gap between the highest and the lowest opinion
+shrinks by a fixed fraction. Silence can delay these contractions, but by
+Corollary~\ref{cor:no-perpetual-silence} it cannot stop them. Hence the
+gap eventually becomes smaller than any given positive value.
+
 % ===================================================================
 \FloatBarrier
 \subsection{Consensus in Clique Graphs}
@@ -203,6 +243,11 @@ $\Delta_t=\max(\mathbf{B}^t)-\min(\mathbf{B}^t)$.
   Squeeze Theorem~\cite{Houshang2014} yields consensus.
   The full proof is in Appendix~\ref{app:proofs}.
 \end{proof}
+
+Theorem~\ref{thm:cbsom-consensus-n3} concerns a community in which everyone listens to everyone, and every agent is
+receptive but somewhat resistant to each of its influencers. In such a
+community, neither silence nor bias prevents agreement: agents may stop
+and resume speaking many times, but their opinions eventually coincide.
 
 \begin{remark}
   Theorem~\ref{thm:cbsom-consensus-n3} extends
@@ -278,6 +323,11 @@ We now show that $\mathcal{F}_\alpha$-biases eliminate this pathology.
   the majority criterion and remains vocal.
 \end{proof}
 
+With $\tau_i=1$, no disagreement is too large to tolerate, because
+opinions lie in $[0,1]$. Lemma~\ref{lem:vocal-n2} thus removes silence
+from the two-agent case: both agents always speak, and the dynamics
+depend only on the influence weights and the bias functions.
+
 \begin{theorem}[Consensus under scaled linear biases for $n=2$]
 \label{thm:cbsom-consensus-n2}
   Consider \CBSOMminus\ on a two-agent clique $\{1,2\}$ with
@@ -308,6 +358,13 @@ We now show that $\mathcal{F}_\alpha$-biases eliminate this pathology.
   Therefore $D^t=\gamma^t D^0\to 0$, and both agents converge to
   the same limit $v\in[0,1]$.
 \end{proof}
+
+Theorem~\ref{thm:cbsom-consensus-n2} shows that some resistance on both
+edges, however small, is enough to restore consensus between two agents.
+In the base model with $I_{12}=I_{21}=1$, each agent adopts the opinion
+of the other, and the two opinions swap forever. With the bias $f_\alpha$,
+each agent moves only a fraction $\alpha$ of the way towards the other,
+so the gap $D^t$ shrinks by the factor $|\gamma|<1$ at every step.
 
 \begin{remark}[Asymmetric bias case]\label{rem:n2-asymmetric}
   Theorem~\ref{thm:cbsom-consensus-n2} requires $\alpha_{i,j}\in(0,1)$

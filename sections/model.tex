@@ -55,6 +55,15 @@ where $I=[I_{ij}]$ is row-stochastic.
   $\lim_{t\to\infty}\mathbf{B}^t=\mathbf{B}^*$.
 \end{theorem}
 
+In words, if everybody listens, directly or indirectly, to everybody
+else, and nobody ignores the community entirely, repeated averaging
+makes all opinions merge into a single value. For instance, three friends
+who repeatedly replace their opinion by the average of the opinions they
+hear end up sharing one opinion, which lies between the most extreme
+initial ones. The next two subsections relax precisely the two
+assumptions hidden in this picture: that everybody always speaks, and
+that disagreement is always absorbed proportionally.
+
 Despite its tractability, the DeGroot model makes two assumptions
 challenged by real social dynamics: it assumes that agents always
 express their opinions freely (no strategic silence), and it assumes
@@ -77,6 +86,12 @@ each of its influencers before the update is applied.
   a continuous map $\beta_{i,j}:[-1,1]\to[-1,1]$
   that transforms the raw disagreement $x=B_j^t-B_i^t$.
 \end{definition}
+
+The sign of $\beta_{i,j}(x)$ tells whether agent $i$ moves towards
+($+$) or away from ($-$) agent $j$, and its magnitude tells how far.
+For example, an agent with a confirmation bias barely reacts to an
+opinion that is very far from its own, even though a DeGroot agent would
+move proportionally to the distance.
 
 Intuitively, $\beta_{i,j}(x)$ is the part of the disagreement $x$ that
 agent $i$ actually absorbs from agent $j$. The identity function
@@ -151,10 +166,21 @@ mechanism as an augmentation of the DeGroot framework.
    \to[0,1]^n\times\{0,1\}^n$ is the joint update function.
 \end{definition}
 
+A state of an SO model contains, for every agent, an opinion and a flag
+that says whether the agent currently expresses it. The function $\mu_G$
+computes the next state from the current one. Only vocal agents can
+influence others; the models below differ in how a silent agent is
+treated by its neighbors.
+
 \begin{definition}[Consensus]\label{def:consensus}
   Agents in an SO model \emph{reach consensus} if $\exists\,v\in[0,1]$
   such that $\lim_{t\to\infty}B_i^t=v$ for all $i\in A$.
 \end{definition}
+
+Consensus does not require that the agents agree at any finite time, only
+that their opinions get arbitrarily close to a common value $v$. It also
+does not fix $v$ in advance: the value depends on the initial opinions,
+the weights, and, in the models below, the bias and silence dynamics.
 
 \subsubsection{Memoryless Model \texorpdfstring{\SOMminus}{SOM-}}
 \label{sec:som-minus}
@@ -216,11 +242,22 @@ underpin the analysis in Section~\ref{sec:analysis}.
   for all $i\in A$.
 \end{lemma}
 
+Lemma~\ref{lem:bounds} says that nobody becomes more extreme than the
+most extreme agent of the previous round. A new opinion is a weighted
+average of the old opinion and the opinions of the vocal neighbors, so
+it cannot leave the interval they span. Silence can only remove
+terms from this average; it cannot push opinions outwards.
+
 \begin{corollary}[Monotone extremes~\cite{aranda2024sound}]
 \label{cor:mono}
   In every \SOMminus\ model, $\max(\mathbf{B}^t)$ is non-increasing
   and $\min(\mathbf{B}^t)$ is non-decreasing in~$t$.
 \end{corollary}
+
+Equivalently, the interval $[\min(\mathbf{B}^t),\max(\mathbf{B}^t)]$
+that contains all opinions can only shrink over time. This is the basic
+reason why one can hope for consensus: the community never spreads
+out, although it may fail to contract to a single point.
 
 \begin{theorem}[Consensus in \SOMminus\ cliques~\cite{aranda2024sound}]
 \label{thm:som-consensus}
@@ -228,6 +265,13 @@ underpin the analysis in Section~\ref{sec:analysis}.
   on an $n$-agent clique with $n\ge 3$.
   Then all agents converge to consensus.
 \end{theorem}
+
+Theorem~\ref{thm:som-consensus} is the starting point of this paper. It
+says that, in a community where everybody hears everybody, strategic
+silence alone does not prevent agreement: agents may stop and resume
+speaking many times, but their opinions eventually coincide. The question
+we study is whether this still holds when agents also process
+disagreement through a cognitive bias.
 
 % ===================================================================
 \subsection{\texorpdfstring{\CBSOMminus}{CBSOM-}: Memoryless with Cognitive Biases}
@@ -322,6 +366,12 @@ remain structurally decoupled. The following example illustrates both.
   where $\hat{B}_j^t=B_j^{t_j'}$ with
   $t_j'=\max\{u\le t:S_j^u=1\}$.
 \end{definition}
+
+For example, suppose that agent $j$ spoke last at time $t-3$ with
+opinion $0.8$ and has been silent since then, while its own opinion has
+meanwhile drifted to $0.6$. In \CBSOMplus, agent $i$ still reacts at time
+$t$ to $\beta_{i,j}(0.8-B_i^t)$, i.e., to what $j$ said, not to what $j$
+now thinks.
 
 The model \CBSOMplus\ applies the bias function to historical public
 opinions: $\beta_{i,j}$ filters how agent $i$ assimilates the last
